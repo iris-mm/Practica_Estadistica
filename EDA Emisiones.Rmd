@@ -24,7 +24,7 @@ library(dplyr)
 library(knitr) 
 ```
 
-## Including Plots
+## Diccionario de datos
 
 You can also embed plots, for example:
 
@@ -32,4 +32,8 @@ You can also embed plots, for example:
 plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Variable mod
+
+## Análisis exploratorio de datos
+### T1
+#### T2
