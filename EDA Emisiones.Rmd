@@ -1,0 +1,35 @@
+---
+title: "Práctica 1: Estadística descriptiva"
+output: html_document
+date: "Estadística - Curso 2024/2025"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+## Introducción y definición de objetos
+
+El objetivo de esta investigación es determinar la forma en que algunas características de distintos vehículos como son su tamaño, peso o potencia de motor; influyen en las emisiones que generan al medioambiente.\
+Nos basamos en datos recogidos en España a lo largo de 2022.
+
+## Importación de datos y carga de paquetes
+```{r}
+library(tidyverse)
+library(summarytools)
+library(ggplot2)
+library(dplyr)
+library(knitr) 
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
