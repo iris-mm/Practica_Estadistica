@@ -26,68 +26,34 @@ library(knitr)
 emisiones <- readxl::read_excel("idae_emissions.xlsx")
 ```
 
-## Diccionario de datos
+### Diccionario de Datos
+- `ID`: Identificador del coche (identificador)
+- `Model`: Modelo del coche (categórica multinivel)
+- `Engine type`: Tipo de motor (categórica multinivel)
+- `Max Consumption l/100km`: Máxima consumición de combustible en l cada 100km (numérica continua)
+- `Max emissions gCO2/km`: Máxima consumición de combustible en l cada 100km (numérica continua)
+- `Engine displacement cm3`: Cilindrada del motor en cm3 (numérica discreta)
+- `Power ice kw`: Potencia del motor en combustión interna en kw (numérica discreta)
+- `Battery range km`: Autonomía de la batería en km (numérica discreta)
+- `CO2/km emissions in WLTP`: Emisiones de CO2 según el ciclo de prueba WLTP en g/km (numérica continua)
+- `Width in mm`: Ancho del vehículo en mm (numérica continua)
+- `Gross vehicle weight in kg`: M.m.a del vehículo en kg (numérica continua)
+- `Fuel economy index`: Eficiencia del vehículo en base a la distancia recorrida y el combustible consumido (categórica multinivel; A,B,C,D,E,F,G,N/A)
+- `Electric consumption kwh/100km`: Consumo de energía eléctrica cada 100km en kwh (numérica continua)
+- `Market segment`: Tipo de vehículo (categórica multinivel)
+- `Min consumption l/100km`: Mínima consumición de combustible en l cada 100km (numérica continua)
+- `Min emissions gCO2/km`: Emisiones mínimas de CO2 en g/km (numérica continua)
+- `Transmission`: Nivel de transmisión del vehículo (categórica ordinal; Manual-M, Semiautomática-SC, Automática-A)
+- `Power CV`: Potencia del motor en CV (numérica continua)
+- `Power electric kw`: Potencia del motor eléctrico en kw (numérica continua)
+- `Consumption l/100km in WLTP`: Consumo de combustible según el ciclo de prueba WLTP en g/km (numérica continua)
+- `Length in mm`: Largo del vehículo en mm (numérica continua)
+- `Height in mm`: Altura del vehículo en mm (numérica continua)
+- `Total seating`: Número de asientos del vehículo (numérica discreta)
+- `Type hybrid`: Tipo de híbrido (categórica dicotómica; Enchufable/Convencional)
+- `Battery capacity kwh`: Capacidad de la batería en kwh (númerica continua)
 
-```{r}
-# Creamos el diccionario de datos
-diccionario_datos <- data.frame(
-  variable = c(
-    "ID", "Model", "Engine type", "Max Consumption l/100km", "Max emissions gCO2/km", 
-    "Engine displacement cm3", "Power ice kw", "Battery range km", 
-    "CO2/km emissions in WLTP", "Width in mm", "Gross vehicle weight in kg", 
-    "Fuel economy index", "Electric consumption kwh/100km", "Market segment", 
-    "Min consumption l/100km", "Min emissions gCO2/km", "Transmission", "Power CV", 
-    "Power electric kw", "Consumption l/100km in WLTP", "Length in mm", 
-    "Height in mm", "Total seating", "Type hybrid", "Battery capacity kwh"
-  ),
-  nombre_real = c(
-    "id", "model", "engine_type", "consumption_max_l_100km", "emissions_max_gCO2_km", 
-    "engine_displacement_cm3", "power_ice_kw", "battery_range_km", 
-    "avg_wltp_emissions_gCO2_km", "width_mm", "gross_vehicle_weight_rating_kg", 
-    "fuel_economy_index", "electric_consumption_kwh_100km", "market_segment", 
-    "consumption_min_l_100km", "emissions_min_gCO2_km", "transmission", "power_cv", 
-    "power_electric_kw", "avg_wltp_consumption_l_100km", "length_mm", 
-    "height_mm", "total_seating", "type_hybrid", "battery_capacity_kwh"
-  ),
-  tipo = c(
-    "long", "String", "String", "double", "double", "int", "int", "int", 
-    "double", "double", "double", "String", "double", "String", "double", 
-    "double", "String", "double", "double", "double", "double", "double", 
-    "int", "String", "double"
-  ),
-  descripcion = c(
-    "Identificador del coche (identificador)", 
-    "Modelo del coche (categórica multinivel)", 
-    "Tipo de motor (categórica multinivel)", 
-    "Máxima consumición de combustible en l cada 100km (numérica continua)", 
-    "Emisiones máximas de CO2 en g/km (numérica continua)", 
-    "Cilindrada del motor en cm3 (numérica discreta)", 
-    "Potencia del motor en combustión interna en kw (numérica discreta)", 
-    "Autonomía de la batería en km (numérica discreta)", 
-    "Emisiones de CO2 según el ciclo de prueba WLTP en g/km (numérica continua)", 
-    "Ancho del vehículo en mm (numérica continua)", 
-    "M.m.a del vehículo en kg (numérica continua)", 
-    "Eficiencia del vehículo en base a la distancia recorrida y el combustible consumido (categórica multinivel; A,B,C,D,E,F,G,N/A)", 
-    "Consumo de energía eléctrica cada 100km en kwh (numérica continua)", 
-    "Tipo de vehículo (categórica multinivel)", 
-    "Mínima consumición de combustible en l cada 100km (numérica continua)", 
-    "Emisiones mínimas de CO2 en g/km (numérica continua)", 
-    "Nivel de transmisión del vehículo (categórica ordinal; Manual-M, Semiautomática-SC, Automática-A)", 
-    "Potencia del motor en CV (numérica continua)", 
-    "Potencia del motor eléctrico en kw (numérica continua)", 
-    "Consumo de combustible según el ciclo de prueba WLTP en g/km (numérica continua)", 
-    "Largo del vehículo en mm (numérica continua)", 
-    "Altura del vehículo en mm (numérica continua)", 
-    "Número de asientos del vehículo (numérica discreta)", 
-    "Tipo de híbrido (categórica dicotómica; Enchufable/Convencional)", 
-    "Capacidad de la batería en kwh (númerica continua)"
-  )
-)
 
-# Imprimir el diccionario de datos como una lista con puntos y cajas de código
-for (i in 1:nrow(diccionario_datos)) {
-  cat("* **", diccionario_datos$variable[i], "**: `", diccionario_datos$descripcion[i], "`\n")
-}
 
 ## Análisis exploratorio de datos
 ### T1
