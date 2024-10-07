@@ -12,8 +12,13 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ## Introducción y definición de objetos
 
-El objetivo de esta investigación es determinar la forma en que algunas características de distintos vehículos como son su tamaño, peso o potencia de motor; influyen en las emisiones que generan al medioambiente.\
-Nos basamos en datos recogidos en España a lo largo de 2022.
+El objetivo de esta investigación es determinar la forma en que algunas características de distintos vehículos como son su tamaño, peso o potencia de motor; influyen en las emisiones que liberan al medioambiente.\
+Para ello nos basamos en datos recogidos en España a lo largo de 2022.\
+Previo al estudio, es necesario destacar que de entre las 26 variables que ofrece el dataset elegido, hemos descartado 6; dado que o bien no consideramos que sean completamente relevantes para la investigación o la muestra de datos es demasiado pequeña como para que tengan peso de referencia.\
+Se prescinde de las variables "ID" y "Total seating" puesto que no se consideran relevantes para el estudio de las emisiones. Siendo la primera un identificador y la segunda un dato que va a ser cubierto por otras variables que proporcionan información acerca de las dimensiones de los vehículos.\
+No se tendrán en cuenta tampoco las variables "CO2/km emissions in WLTP" y "Consumption l/100km in WLTP", ya que el dataset ofrece otras variables similares que creemos son más útiles en el estudio (Max & min Consumption l/100km, Max & min emissions gCO2/km). Así como la variable "Type hybrid", pues hay muy pocos datos recogidos como para que sea relevante.\
+Finalmente, se ha decidido crear la variable adicional "frontal area" en reemplazo de las variables "length", "width" y "height" (siendo la primera descartada), con objeto de centralizar el estudio en datos que se refieran directamente a la contaminación de los vehículos.
+
 
 ## Importación de datos y carga de paquetes
 ```{r}
@@ -26,7 +31,7 @@ library(knitr)
 emisiones <- readxl::read_excel("idae_emissions.xlsx")
 ```
 
-### Diccionario de Datos
+## Diccionario de Datos
 - `ID`: Identificador del coche (identificador)
 - `Model`: Modelo del coche (categórica multinivel)
 - `Engine type`: Tipo de motor (categórica multinivel)
@@ -38,7 +43,7 @@ emisiones <- readxl::read_excel("idae_emissions.xlsx")
 - `CO2/km emissions in WLTP`: Emisiones de CO2 según el ciclo de prueba WLTP en g/km (numérica continua)
 - `Width in mm`: Ancho del vehículo en mm (numérica continua)
 - `Gross vehicle weight in kg`: M.m.a del vehículo en kg (numérica continua)
-- `Fuel economy index`: Eficiencia del vehículo en base a la distancia recorrida y el combustible consumido (categórica multinivel; A,B,C,D,E,F,G,N/A)
+- `Fuel economy index`: Índice de eficiencia del vehículo (categórica multinivel; A,B,C,D,E,F,G,N/A)
 - `Electric consumption kwh/100km`: Consumo de energía eléctrica cada 100km en kwh (numérica continua)
 - `Market segment`: Tipo de vehículo (categórica multinivel)
 - `Min consumption l/100km`: Mínima consumición de combustible en l cada 100km (numérica continua)
@@ -53,8 +58,36 @@ emisiones <- readxl::read_excel("idae_emissions.xlsx")
 - `Type hybrid`: Tipo de híbrido (categórica dicotómica; Enchufable/Convencional)
 - `Battery capacity kwh`: Capacidad de la batería en kwh (númerica continua)
 
+### Variable Frontal area
 
+```{r}
+emisiones <- emisiones %>%
+  mutate(area_frontal_m2 = (width_mm / 1000) * (height_mm / 1000))
+
+```
+La variable frontal area nos proporciona información sobre la aerodinámica de los vehículos. Los que tengan una mayor área frontal ejercerán más resistencia contra el viento, haciendo que necesiten más energía para moverse y por tanto quemen más combustible.
 
 ## Análisis exploratorio de datos
-### T1
-#### T2
+
+### Datos univariantes
+
+#### Variable Model
+#### Variable Engine type
+#### Variable Max Consumption l/100km
+#### Variable Max emissions gCO2/km
+#### Variable Engine displacement cm3
+#### Variable Power ice kw
+#### Variable Battery range km
+#### Variable Frontal area
+#### Variable Gross vehicle weight in kg
+#### Variable Fuel economy index
+#### Variable Electric consumption kwh/100km
+#### Variable Market segment
+#### Variable Min consumption l/100km
+#### Variable Min emissions gCO2/km
+#### Variable Transmission
+#### Variable Power CV
+#### Variable Power electric kw
+#### Variable Battery capacity kwh
+
+### Datos bivariantes
