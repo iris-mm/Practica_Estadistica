@@ -8,6 +8,15 @@ date: "Estadística - Curso 2024/2025"
 knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE)
+
+COLOR_Frequency = "black"
+COLOR_MaxEmissions = "lightblue"
+COLOR_MaxConsumption = "blue"
+COLOR_PowerIce = "green"
+COLOR_FuelEconomyIndex = "pink"
+COLOR_EngineType = "orange"
+COLOR_FrontalArea = "purple"
+COLOR_MaxConsumption100km = "darkblue"
 ```
 
 ## Introducción y definición de objetos
@@ -77,7 +86,7 @@ La variable frontal area nos proporciona información sobre la aerodinámica de 
 
 ```{r}
 ggplot(emisiones, aes(x = `emissions_max_gCO2_km`)) +
-  geom_histogram(binwidth = 10, fill = "skyblue", color = "black") +
+  geom_histogram(binwidth = 10, fill = COLOR_MaxEmissions, color = COLOR_Frequency) +
   labs(title = "Distribución de Máximas Emisiones de CO2 (g/km)",
        x = "Max emissions gCO2/km",
        y = "Frecuencia") +
@@ -102,7 +111,7 @@ emisiones_tipificadas <- emisiones %>%
 # Histograma de la variable estandarizada "Max emissions"
 ```{r}
 ggplot(emisiones_tipificadas, aes(x = Max_emissions_z)) +
-  geom_histogram(binwidth = 0.5, fill = "skyblue", color = "black") +
+  geom_histogram(binwidth = 0.5, fill = COLOR_MaxEmissions, color = COLOR_Frequency) +
   labs(title = "Distribución de Máximas Emisiones de CO2 (Estandarizada)",
        x = "Max emissions (Z-score)",
        y = "Frecuencia") +
@@ -112,7 +121,7 @@ ggplot(emisiones_tipificadas, aes(x = Max_emissions_z)) +
 # Histograma de la variable estandarizada "Max Consumption"
 ```{r}
 ggplot(emisiones_tipificadas, aes(x = Max_Consumption_z)) +
-  geom_histogram(binwidth = 0.5, fill = "orange", color = "black") +
+  geom_histogram(binwidth = 0.5, fill = COLOR_MaxConsumption, color = COLOR_Frequency) +
   labs(title = "Distribución de Consumo Máximo de Combustible (Estandarizada)",
        x = "Max Consumption (Z-score)",
        y = "Frecuencia") +
@@ -122,7 +131,7 @@ ggplot(emisiones_tipificadas, aes(x = Max_Consumption_z)) +
 # Histograma de la variable estandarizada "Power ice kw"
 ```{r}
 ggplot(emisiones_tipificadas, aes(x = Power_ice_z)) +
-  geom_histogram(binwidth = 0.5, fill = "lightgreen", color = "black") +
+  geom_histogram(binwidth = 0.5, fill = COLOR_PowerIce, color = COLOR_Frequency) +
   labs(title = "Distribución de Potencia del Motor (Estandarizada)",
        x = "Power ice kw (Z-score)",
        y = "Frecuencia") +
@@ -159,7 +168,7 @@ resumen
 # Gráfico de la distribución del Índice de Eficiencia del Combustible
 ```{r}
 ggplot(emisiones, aes(x = `fuel_economy_index`)) +
-  geom_bar(fill = "purple", color = "black") +
+  geom_bar(fill = COLOR_FuelEconomyIndex, color = COLOR_Frequency) +
   labs(title = "Distribución del Índice de Eficiencia del Combustible",
        x = "Índice de Eficiencia",
        y = "Frecuencia") +
@@ -186,7 +195,7 @@ print(tabla_frecuencias_engine_type)
 # Gráfico de barras para el índice de eficiencia de combustible
 ```{r}
 ggplot(as.data.frame(tabla_frecuencias_fuel_economy), aes(x = Var1, y = Freq)) +
-  geom_bar(stat = "identity", fill = "lightblue") +
+  geom_bar(stat = "identity", fill = COLOR_FuelEconomyIndex) +
   labs(title = "Frecuencia del Índice de Eficiencia de Combustible",
        x = "Índice de Eficiencia",
        y = "Frecuencia") +
@@ -196,7 +205,7 @@ ggplot(as.data.frame(tabla_frecuencias_fuel_economy), aes(x = Var1, y = Freq)) +
 # Gráfico de barras para el tipo de motor
 ```{r}
 ggplot(as.data.frame(tabla_frecuencias_engine_type), aes(x = Var1, y = Freq)) +
-  geom_bar(stat = "identity", fill = "orange") +
+  geom_bar(stat = "identity", fill = COLOR_EngineType) +
   labs(title = "Frecuencia del Tipo de Motor",
        x = "Tipo de Motor",
        y = "Frecuencia") +
@@ -207,8 +216,8 @@ ggplot(as.data.frame(tabla_frecuencias_engine_type), aes(x = Var1, y = Freq)) +
 # Gráfico de dispersión: Potencia (kw) vs Max Emisiones CO2
 ```{r}
 ggplot(emisiones, aes(x = `power_ice_kw`, y = `emissions_max_gCO2_km`)) +
-  geom_point(color = "red", size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  geom_point(color = COLOR_PowerIce, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = COLOR_MaxEmissions) +
   labs(title = "Relación entre Potencia del motor y Emisiones de CO2",
        x = "Potencia del Motor (kw)",
        y = "Max emissions gCO2/km") +
@@ -232,8 +241,8 @@ summary(modelo)
 # Gráfico de dispersión: Área frontal vs Max Consumption
 ```{r}
 ggplot(emisiones, aes(x = area_frontal_m2, y = `consumption_max_l_100km`)) +
-  geom_point(color = "darkgreen", size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  geom_point(color = COLOR_FrontalArea, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = COLOR_MaxConsumption100km) +
   labs(title = "Relación entre Área Frontal y Consumo Máximo de Combustible",
        x = "Área Frontal (m2)",
        y = "Max Consumption l/100km") +
@@ -244,8 +253,8 @@ ggplot(emisiones, aes(x = area_frontal_m2, y = `consumption_max_l_100km`)) +
 ###Gráfico de dispersión: Peso del vehículo vs. Máximas emisiones de CO2
 ```{r}
 ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`, y = `emissions_max_gCO2_km`)) +
-  geom_point(color = "purple", size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  geom_point(color = COLOR_MaxEmissions, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = COLOR_Frequency) +
   labs(title = "Relación entre Peso del Vehículo y Emisiones de CO2",
        x = "Peso del Vehículo (kg)",
        y = "Max emissions gCO2/km") +
@@ -256,8 +265,8 @@ ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`, y = `emissions_max_g
 ###Gráfico de dispersión: Cilindrada del motor vs. Máximas emisiones de CO2
 ```{r}
 ggplot(emisiones, aes(x = `engine_displacement_cm3`, y = `emissions_max_gCO2_km`)) +
-  geom_point(color = "cyan", size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  geom_point(color = COLOR_MaxEmissions, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = COLOR_Frequency) +
   labs(title = "Relación entre Cilindrada del Motor y Emisiones de CO2",
        x = "Cilindrada del Motor (cm3)",
        y = "Max emissions gCO2/km") +
