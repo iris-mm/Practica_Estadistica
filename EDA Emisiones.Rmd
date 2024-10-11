@@ -1,35 +1,42 @@
 ---
 title: "Práctica 1: Estadística descriptiva"
-output: html_document
 date: "Estadística - Curso 2024/2025"
+
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE)
-
-COLOR_Frequency = "black"
-COLOR_MaxEmissions = "lightblue"
-COLOR_MaxConsumption = "blue"
-COLOR_PowerIce = "green"
-COLOR_FuelEconomyIndex = "pink"
-COLOR_EngineType = "orange"
-COLOR_FrontalArea = "purple"
-COLOR_MaxConsumption100km = "darkblue"
 ```
 
-## Introducción y definición de objetos
+# 1. Introducción y definición de objetos
+
+## 1.1 Objetivo de la investigación
 
 El objetivo de esta investigación es determinar la forma en que algunas características de distintos vehículos como son su tamaño, peso o potencia de motor; influyen en las emisiones que liberan al medioambiente.\
-Para ello nos basamos en datos recogidos en España a lo largo de 2022.\
-Previo al estudio, es necesario destacar que de entre las 26 variables que ofrece el dataset elegido, hemos descartado 6; dado que o bien no consideramos que sean completamente relevantes para la investigación o la muestra de datos es demasiado pequeña como para que tengan peso de referencia.\
-Se prescinde de las variables "ID" y "Total seating" puesto que no se consideran relevantes para el estudio de las emisiones. Siendo la primera un identificador y la segunda un dato que va a ser cubierto por otras variables que proporcionan información acerca de las dimensiones de los vehículos.\
-No se tendrán en cuenta tampoco las variables "CO2/km emissions in WLTP" y "Consumption l/100km in WLTP", ya que el dataset ofrece otras variables similares que creemos son más útiles en el estudio (Max & min Consumption l/100km, Max & min emissions gCO2/km). Así como la variable "Type hybrid", pues hay muy pocos datos recogidos como para que sea relevante.\
-Finalmente, se ha decidido crear la variable adicional "frontal area" en reemplazo de las variables "length", "width" y "height" (siendo la primera descartada), con objeto de centralizar el estudio en datos que se refieran directamente a la contaminación de los vehículos.
+Para ello nos basamos en datos recogidos en España a lo largo de 2022.
+
+## 1.2. Variables excluidas
+Antes de comenzar el análisis, se han descartado 6 de las 26 variables que ofrece el dataset, ya que no se consideran relevantes para el estudio o contienen una muestra de datos demasiado pequeña. Las variables excluidas son las siguientes:
+
+- **ID**: Es un identificador que no aporta valor al análisis de emisiones.
+- **Total seating**: Se cubre mediante otras variables que ya proporcionan suficiente información acerca de las dimensiones del vehículo.
+- **CO2/km emissions in WLTP** y **Consumption l/100km in WLTP**: Estas variables han sido descartadas ya que el dataset ofrece otras similares que resultan más útiles para el estudio (como el consumo máximo y mínimo de combustible y las emisiones de CO2).
+- **Type hybrid**: Esta variable ha sido excluida debido a la falta de suficientes datos para que sea relevante en el análisis.
 
 
-## Importación de datos y carga de paquetes
+## 1.3. Nueva variable: Área frontal
+
+Con el objetivo de optimizar el análisis de las dimensiones del vehículo, se decidió crear una nueva variable denominada "frontal area". Esta variable se calcula a partir de las dimensiones de ancho y alto del vehículo (descartando la longitud). La **área frontal** es una medida que ayuda a analizar cómo las dimensiones del vehículo influyen en su resistencia aerodinámica, lo cual tiene un impacto directo en el consumo de combustible y las emisiones. Los vehículos con mayor área frontal ejercen más resistencia al viento, lo que aumenta la necesidad de energía y, por tanto, incrementa las emisiones.
+
+
+# 2. Importación de datos y carga de paquetes
 ```{r}
 library(tidyverse)
 library(summarytools)
@@ -42,7 +49,10 @@ library(corrplot)
 emisiones <- readxl::read_excel("idae_emissions.xlsx")
 ```
 
-## Diccionario de Datos
+# 3. Diccionario de Datos
+
+## 3.1. Descripción de las variables
+
 - `ID`: Identificador del coche (identificador)
 - `Model`: Modelo del coche (categórica multinivel)
 - `Engine type`: Tipo de motor (categórica multinivel)
@@ -69,9 +79,7 @@ emisiones <- readxl::read_excel("idae_emissions.xlsx")
 - `Type hybrid`: Tipo de híbrido (categórica dicotómica; Enchufable/Convencional)
 - `Battery capacity kwh`: Capacidad de la batería en kwh (númerica continua)
 
-## Análisis
-
-### Variable "Frontal Area"
+## 3.2. Definición de la variable "Frontal area"
 
 ```{r}
 emisiones <- emisiones %>%
@@ -80,17 +88,22 @@ emisiones <- emisiones %>%
 ```
 La variable frontal area nos proporciona información sobre la aerodinámica de los vehículos. Los que tengan una mayor área frontal ejercerán más resistencia contra el viento, haciendo que necesiten más energía para moverse y por tanto quemen más combustible.
 
-# Distribución de Emisiones Máximas de CO2 (g/km)
+# 4. Análisis exploratorio de datos
+
+## 4.1. Análisis univariado
+
+### 4.1.1. Distribución de máximas emisiones de CO2
+
 ```{r}
 ggplot(emisiones, aes(x = `emissions_max_gCO2_km`)) +
-  geom_histogram(binwidth = 10, fill = COLOR_MaxEmissions, color = COLOR_Frequency) +
-  labs(title = "Distribución de Emisiones Máximas de CO2 (g/km)",
-       x = "Emisiones Máximas de CO2 (g/km)",
+  geom_histogram(binwidth = 10, fill = "skyblue", color = "black") +
+  labs(title = "Distribución de Máximas Emisiones de CO2 (g/km)",
+       x = "Max emissions gCO2/km",
        y = "Frecuencia") +
   theme_minimal()
 ```
 
-# Estandarización (Tipificación) de variables
+### 4.1.2. Tipificación de las variables numéricas
 ```{r}
 emisiones_tipificadas <- emisiones %>%
   mutate(
@@ -103,36 +116,7 @@ emisiones_tipificadas <- emisiones %>%
   )
 ```
 
-# Histograma de Emisiones Máximas de CO2 estandarizada
-```{r}
-ggplot(emisiones_tipificadas, aes(x = Max_emissions_z)) +
-  geom_histogram(binwidth = 0.5, fill = COLOR_MaxEmissions, color = COLOR_Frequency) +
-  labs(title = "Distribución de Emisiones Máximas de CO2 estandarizada",
-       x = "Emisiones Máximas de CO2",
-       y = "Frecuencia") +
-  theme_minimal()
-```
-# Histograma de Comsumo Máximo de Combustible estandarizado
-```{r}
-ggplot(emisiones_tipificadas, aes(x = Max_Consumption_z)) +
-  geom_histogram(binwidth = 0.5, fill = COLOR_MaxConsumption, color = COLOR_Frequency) +
-  labs(title = "Distribución de Consumo Máximo de Combustible estandarizado",
-       x = "Consumo Máximo",
-       y = "Frecuencia") +
-  theme_minimal()
-```
-
-# Histograma de Potencia de Motor estandarizada
-```{r}
-ggplot(emisiones_tipificadas, aes(x = Power_ice_z)) +
-  geom_histogram(binwidth = 0.5, fill = COLOR_PowerIce, color = COLOR_Frequency) +
-  labs(title = "Distribución de Potencia de Motor estandarizada",
-       x = "Potencia de Motor (kw)",
-       y = "Frecuencia") +
-  theme_minimal()
-```
-
-# Media y Mediana de Emisiones Máximas de CO2 (g/km)
+### 4.1.3 Cálculo de media y mediana de emisiones
 ```{r}
 mean_emissions <- mean(emisiones$`emissions_max_gCO2_km`, na.rm = TRUE)
 median_emissions <- median(emisiones$`emissions_max_gCO2_km`, na.rm = TRUE)
@@ -142,7 +126,7 @@ median_emissions
 ```
 
 
-# Resumen estadístico
+### 4.1.4 Resumen estadístico de variables relevantes
 ```{r}
 resumen <- emisiones %>%
   summarise(
@@ -159,171 +143,165 @@ resumen <- emisiones %>%
 resumen
 ```
 
-# Distribución del Índice de Eficiencia de Combustible
+
+## 4.2 Análisis bivariado
+
+###4.2.1 Gráfico de la distribución del Índice de Eficiencia del Combustible
 ```{r}
 ggplot(emisiones, aes(x = `fuel_economy_index`)) +
-  geom_bar(fill = COLOR_FuelEconomyIndex, color = COLOR_Frequency) +
-  labs(title = "Distribución del Índice de Eficiencia de Combustible",
+  geom_bar(fill = "purple", color = "black") +
+  labs(title = "Distribución del Índice de Eficiencia del Combustible",
        x = "Índice de Eficiencia",
        y = "Frecuencia") +
   theme_minimal()
 ```
 
-### Datos bivariantes
-
-# Tabla de frecuencias de Índice de Eficiencia de Combustible
+### 4.2.2 Tabla de frecuencias para "Fuel economy index"
 ```{r}
 tabla_frecuencias_fuel_economy <- table(emisiones$`fuel_economy_index`)
 print(tabla_frecuencias_fuel_economy)
 ```
 
-# Tabla de frecuencias para Tipo de Motor
+### 4.2.3 Tabla de frecuencias para "Engine type"
 ```{r}
 tabla_frecuencias_engine_type <- table(emisiones$`engine_type`)
 print(tabla_frecuencias_engine_type)
 ```
 
 
-# Tablas de frecuencias en gráficos de barra
+### 4.2.4 Visualización de las tablas de frecuencias
 
-# Gráfico de barras para Índice de Eficiencia de Combustible
+#### 4.2.4.1 Gráfico de barras para el índice de eficiencia de combustible
 ```{r}
 ggplot(as.data.frame(tabla_frecuencias_fuel_economy), aes(x = Var1, y = Freq)) +
-  geom_bar(stat = "identity", fill = COLOR_FuelEconomyIndex) +
+  geom_bar(stat = "identity", fill = "lightblue") +
   labs(title = "Frecuencia del Índice de Eficiencia de Combustible",
        x = "Índice de Eficiencia",
        y = "Frecuencia") +
   theme_minimal()
 ```
 
-# Gráfico de barras para Tipo de Motor
+#### 4.2.4.2 Gráfico de barras para el tipo de motor
 ```{r}
-ggplot(as.data.frame(tabla_frecuencias_engine_type), aes(x = Freq, y = Var1)) +
-  geom_bar(stat = "identity", fill = COLOR_EngineType) +
+ggplot(as.data.frame(tabla_frecuencias_engine_type), aes(x = Var1, y = Freq)) +
+  geom_bar(stat = "identity", fill = "orange") +
   labs(title = "Frecuencia del Tipo de Motor",
-       x = "Frecuencia",
-       y = "Tipo de Motor") +
+       x = "Tipo de Motor",
+       y = "Frecuencia") +
   theme_minimal()
 ```
 
 
-# Gráfico de dispersión - Relación entre Potencia del Motor y Emisiones Máximas de CO2
+### 4.2.5 Gráficos de dispersión
 ```{r}
 ggplot(emisiones, aes(x = `power_ice_kw`, y = `emissions_max_gCO2_km`)) +
-  geom_point(color = COLOR_PowerIce, size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = COLOR_MaxEmissions) +
-  labs(title = "Relación entre Potencia y Emisiones Máximas de CO2",
+  geom_point(color = "red", size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Relación entre Potencia del motor y Emisiones de CO2",
        x = "Potencia del Motor (kw)",
-       y = "Emisiones Máximas de CO2 (g/km)") +
+       y = "Max emissions gCO2/km") +
   theme_minimal()
 ```
 
-# Correlación entre Potencia del Motor y Emisiones
+#### 4.2.5.1 Potencia (kw) vs Máximas emisiones de CO2
 ```{r}
 cor_power_emissions <- cor(emisiones$`power_ice_kw`, emisiones$`emissions_max_gCO2_km`, use = "complete.obs")
 cor_power_emissions
 
 ```
 
-# Regresión lineal
+##### Modelo de regresión lineal
 ```{r}
 modelo <- lm(`emissions_max_gCO2_km` ~ `power_ice_kw`, data = emisiones)
 summary(modelo)
 ```
 
 
-# Gráfico de dispersión - Relación entre Área Frontal y Comsumo Máximo de Combustible
+#### 4.2.5.2 Área frontal vs Consumo máximo
 ```{r}
 ggplot(emisiones, aes(x = area_frontal_m2, y = `consumption_max_l_100km`)) +
-  geom_point(color = COLOR_FrontalArea, size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = COLOR_MaxConsumption100km) +
-  labs(title = "Relación entre Área Frontal y Comsumo Máximo de Combustible",
+  geom_point(color = "darkgreen", size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Relación entre Área Frontal y Consumo Máximo de Combustible",
        x = "Área Frontal (m2)",
-       y = "Comsumo Máximo (l/100km)") +
+       y = "Max Consumption l/100km") +
   theme_minimal()
 ```
 
 
-###Gráfico de dispersión - Relación entre Peso y Emisiones Máximas de CO2
+#### 4.2.5.3 Peso del vehículo vs Máximas emisiones de CO2
 ```{r}
 ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`, y = `emissions_max_gCO2_km`)) +
-  geom_point(color = COLOR_MaxEmissions, size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = COLOR_Frequency) +
-  labs(title = "Relación entre Peso y Emisiones Máximas de CO2 (g/km)",
+  geom_point(color = "purple", size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Relación entre Peso del Vehículo y Emisiones de CO2",
        x = "Peso del Vehículo (kg)",
-       y = "Emisiones Máximas de CO2 (g/km)") +
+       y = "Max emissions gCO2/km") +
   theme_minimal()
 ```
 
 
-###Gráfico de dispersión - Relación entre Cilindrada del Motor y Emisiones Máximas de CO2
+#### 4.2.5.4 Cilindrada del motor vs Máximas emisiones de CO2
 ```{r}
 ggplot(emisiones, aes(x = `engine_displacement_cm3`, y = `emissions_max_gCO2_km`)) +
-  geom_point(color = COLOR_MaxEmissions, size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = COLOR_Frequency) +
-  labs(title = "Relación entre Cilindrada del Motor y Emisiones Máximas de CO2 (g/km)",
+  geom_point(color = "cyan", size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Relación entre Cilindrada del Motor y Emisiones de CO2",
        x = "Cilindrada del Motor (cm3)",
-       y = "Emisiones Máximas de CO2 (g/km)") +
+       y = "Max emissions gCO2/km") +
   theme_minimal()
 
 ```
 
-
-# Gráfico de boxplot - Relación entre Emisiones Máximas de CO2 e Índice de Eficiencia de Combustible
+### 4.2.6 Gráficos de boxplot
+#### 4.2.6.1 Emisiones según el índice de eficiencia de combustible
 ```{r}
 ggplot(emisiones, aes(x = `fuel_economy_index`, y = `emissions_max_gCO2_km`, fill = `fuel_economy_index`)) +
   geom_boxplot() +
-  labs(title = "Relación entre Emisiones Máximas de CO2 e Índice de Eficiencia de Combustible",
+  labs(title = "Emisiones de CO2 por Índice de Eficiencia de Combustible",
        x = "Índice de Eficiencia",
-       y = "Emisiones Máximas de CO2 (g/km)") +
+       y = "Max emissions gCO2/km") +
   theme_minimal()
 ```
 
-# Gráfico de boxplot - Relación entre Emisiones Máximas de CO2 y Tipo de Motor
+#### 4.2.6.2 Emisiones según el tipo de motor
 ```{r}
 ggplot(emisiones, aes(x = `engine_type`, y = `emissions_max_gCO2_km`, fill = `engine_type`)) +
   geom_boxplot() +
-  labs(title = "Relación entre Emisiones Máximas de CO2 y Tipo de Motor",
+  labs(title = "Emisiones de CO2 por Tipo de Motor",
        x = "Tipo de Motor",
-       y = "Emisiones Máximas de CO2 (g/km)") +
+       y = "Max emissions gCO2/km") +
   theme_minimal()
 ```
 
 
-# Modelo de regresión lineal
+### 4.2.7 Correlación entre potencia y emisiones
+cor_power_emissions <- cor(emisiones$`power_ice_kw`, emisiones$`emissions_max_gCO2_km`, use = "complete.obs")
+cor_power_emissions
+
+
+### 4.2.8 Modelo de regresión lineal
+
 ```{r}
 modelo <- lm(`emissions_max_gCO2_km` ~ `power_ice_kw`, data = emisiones)
 summary(modelo)
 ```
 
-## Conclusiones
+# 5. Conclusiones
 
-### Hallazgos
-1. **Relación entre Potencia y Emisiones:** Se encuentra una correlación negativa entre la potencia del motor y las emisiones de CO2. Esto indica que a mayor potencia, menor emisión de CO2, esto puede indicar que los vehículos más potentes usan tecnologías más eficientes.
+## 5.1 Resumen de hallazgos clave
+1. **Relación entre potencia y emisiones:** Se encontró una correlación negativa significativa entre la potencia del motor y las emisiones de CO2. Esto sugiere que a medida que aumenta la potencia, las emisiones de CO2 tienden a disminuir, lo que podría indicar que los vehículos más potentes están utilizando tecnologías más eficientes.
   
-2. **Consumo:** Las emisiones de CO2 muestran una relación con el consumo de combustible, donde a menor consumo de este, menor emisión se produce. Esto sugiere que un mejor uso del combustible que se usa en el motor durante un trayecto puede hacer que se emita menos durante este.
+2. **Efecto del consumo:** Las emisiones de CO2 también mostraron una relación con el consumo de combustible, donde un menor consumo está asociado con menores emisiones. Esto destaca la importancia de la eficiencia energética en la reducción de emisiones contaminantes.
 
-3. **Zonas de estandarización:** Al estandarizar las variables se facilita la comparación entre valores. Viendo las comparaciones con estos valores se puede apreciar que hay una variedad de desempeño entre los vehículos en términos de emisiones y consumo.
+3. **Zonas de estandarización:** Al estandarizar las variables, se facilitó la comparación entre diferentes métricas. Las distribuciones estandarizadas indicaron que hay una variedad de desempeño entre los vehículos en términos de emisiones y consumo.
 
-4. **Matriz de correlación:** La matriz de correlación muestra que la mayoría de las variables están relacionadas, implicando que un cambio en una puede afectar a las demás.
+4. **Matriz de correlación:** La matriz de correlación reveló que la mayoría de las variables están interrelacionadas, lo que implica que un cambio en una variable podría afectar a las demás.
 
+## 5.2 Recomendaciones
+- **Fomentar la investigación en tecnología eficiente:** Se recomienda que los fabricantes de automóviles inviertan más en investigación y desarrollo de tecnologías que mejoren la eficiencia del combustible y reduzcan las emisiones de CO2.
 
-### Posibles caminos de mejora para la disminución de emisión y contaminación
-- **Investigación en tecnologías eficientes:** Los fabricantes de los vehiculos podrían invertir más en investigación y desarrollo de tecnologías que mejoren la eficiencia del combustible, reduciendo así las emisiones de CO2.
+- **Políticas ambientales:** Los responsables de las políticas deberían considerar la implementación de incentivos para vehículos que cumplan con estándares de baja emisión, así como promover el uso de energías limpias.
 
-- **Políticas ambientales:** Se podrían considerar la aplicación de incentivos para vehículos que cumplan con estándares de baja emisión, promoviendo así vehiculos de menor consumo o de combustible de energias limpias, como los coches electricos.
+- **Educación del consumidor:** Los consumidores deben ser educados sobre la importancia de elegir vehículos con menor consumo de combustible y emisiones de CO2, para contribuir a un medio ambiente más saludable.
 
-- **Mayor educación en los consumidores:** Los consumidores deberían conocer y entender más sobre el impacto ambiental de los vehiculos comunes de transporte, ya sean coches, motos, u otros vehiculos impulsado con energías no renovables y contaminantes, para así incitar a, por ejemplo, la importancia de elegir usar vehículos de menor consumo.
-
-
-
-# Créditos
-**Equipo**\
-CARLA CALVACHE AMADOR\
-MIGUEL GARCÍA FIGUEROA\
-ÁNGEL YOUNES KARIM MÉRIDA\
-IRIS MUÑOZ MONTERO\
-RUBÉN PEDROSO PRAENA\
-
-**Datos**\
-Datos recopilados en www.kaggle.com
