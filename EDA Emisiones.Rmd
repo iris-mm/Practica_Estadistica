@@ -125,7 +125,7 @@ La tabla muestra cuántos vehículos pertenecen a cada tipo de motor (gasolina, 
 
 ```{r}
 frecuencia_tipo_motor <- emisiones %>%
-  count(`Engine type`) %>%
+  count(`engine_type`) %>%
   arrange(desc(n))
 
 print(frecuencia_tipo_motor)
