@@ -119,41 +119,135 @@ En esta parte se examina cada variable de forma individual para describir su com
 
 Se generarán tablas de frecuencias para variables cualitativas como **Engine type**, **Market segment**, y **Transmission**, para observar cómo se distribuyen estas categorías en el dataset.
 
-<<<<<<< HEAD
-=======
-####Frecuencia de tipos de motor
+**Frecuencia de tipos de motor**
+
+La tabla muestra cuántos vehículos pertenecen a cada tipo de motor (gasolina, diésel, eléctrico, híbrido, etc.). Esto es importante porque permite ver qué tecnología es la más común y su impacto en las emisiones. 
 
 ```{r}
 frecuencia_tipo_motor <- emisiones %>%
-  count(`Engine type`) %>%
+  count(`engine_type`) %>%
   arrange(desc(n))
 
 print(frecuencia_tipo_motor)
 ```
 
-####Frecuencia de segmentos de mercado
+Si hay más vehículos a gasolina o diésel, por ejemplo, las emisiones estarán dominadas por estos grupos, mientras que una alta proporción de eléctricos o híbridos indicaría una transición hacia opciones más limpias.
+
+**Frecuencia de segmentos de mercado**
+
+La tabla refleja la cantidad de vehículos en diferentes categorías, como compactos, SUV, sedanes, deportivos, entre otros. Esto nos ayuda a identificar qué tipos de vehículos son más comunes y cómo se relacionan con las emisiones.
 
 ```{r}
 frecuencia_segmento_mercado <- emisiones %>%
-  count(`Market segment`) %>%
+  count(`market_segment`) %>%
   arrange(desc(n))
 
 print(frecuencia_segmento_mercado)
 ```
 
-####Frecuencia de tipo de transmisión
+Una alta presencia de SUV, por ejemplo, podría implicar emisiones promedio más altas, ya que suelen tener motores más potentes y consumen más combustible.
+
+**Frecuencia de tipo de transmisión**
+
+La tabla muestra cuántos vehículos tienen transmisión manual, semiautomática o automática. Esto nos permite ver si hay una preferencia clara hacia ciertos tipos de transmisión que podrían afectar la eficiencia y las emisiones del vehículo. 
 
 ```{r}
 frecuencia_transmision <- emisiones %>%
-  count(`Transmission`) %>%
+  count(`transmission`) %>%
   arrange(desc(n))
 
 print(frecuencia_transmision)
 ```
->>>>>>> carla
+
+Por ejemplo, las transmisiones automáticas modernas suelen ser más eficientes en el consumo de combustible que las manuales tradicionales.
 
 ### 3.1.2. Gráficos de barras e histogramas
 
+Utilizaremos Gráficos de barras e Historiogramas para visualizar la distribución de variables cuantitativas y cualitativas, como las emisiones máximas de CO2 o el tipo de motor, mediante gráficos de barras e histogramas.
+
+- **Gráficos de barras**: Los gráficos de barras permiten visualizar la frecuencia de las categorías de variables cualitativas. A continuación, se muestran los gráficos de barras para las mismas variables de las tablas de frecuencia:
+
+**Gráfico de barras: Tipos de motor**
+
+Se analiza la frecuencia de los distintos tipos de motores presentes en el dataset. Este análisis es relevante porque los diferentes tipos de motores (como gasolina, diésel, eléctrico, híbrido, entre otros) pueden tener un impacto significativo en las emisiones de CO2 y en la eficiencia del combustible. Al observar este gráfico, se puede identificar qué tipo de motor es más común entre los vehículos analizados.
+
+```{r}
+ggplot(emisiones, aes(x = `engine_type`)) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(title = "Frecuencia de tipos de motor", x = "Tipo de motor", y = "Frecuencia") +
+  theme_minimal() +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Ajuste de la inclinación
+```
+
+Por ejemplo, si la mayoría de los vehículos son de motor diésel, esto puede indicar una tendencia hacia la eficiencia de combustible, pero también puede relacionarse con mayores emisiones de CO2 en comparación con los motores eléctricos. Esta información es útil para entender las preferencias del mercado y las implicaciones ambientales de cada tipo de motor.
+
+**Gráfico de barras: Segmento de mercado**
+
+Se evalúa la distribución de los vehículos según su categoría (como sedanes, SUVs, compactos, etc.). Este análisis es importante porque diferentes segmentos de mercado suelen tener diferentes características y, por lo tanto, diferentes patrones de consumo y emisiones. Al observar la frecuencia de cada segmento, se pueden identificar cuáles son los más populares.
+
+```{r}
+ggplot(emisiones, aes(x = `market_segment`)) +
+  geom_bar(fill = "lightgreen", color = "black") +
+  labs(title = "Frecuencia de segmentos de mercado", x = "Segmento de mercado", y = "Frecuencia") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 55, hjust = 1)) # Ajuste de la inclinación
+```
+
+Por ejemplo, si el segmento de SUVs es el más representado, esto podría implicar un mayor tamaño y peso promedio de los vehículos en comparación con los sedanes, lo que generalmente se traduce en un mayor consumo de combustible y emisiones de CO2. Así, este gráfico proporciona información valiosa sobre las tendencias del mercado y su posible impacto ambiental
+
+**Gráfico de barras: Tipo de transmisión**
+
+Se examina la distribución de los vehículos según su sistema de transmisión (manual, automática, semiautomática). Este análisis es relevante porque la elección del tipo de transmisión puede influir en el rendimiento del vehículo y en su eficiencia de combustible. Por ejemplo, los vehículos automáticos tienden a ser más fáciles de manejar, lo que puede hacer que sean más populares, mientras que los manuales pueden ofrecer un mejor control del consumo de combustible en manos de conductores experimentados. Al observar este gráfico, se puede determinar cuál es el tipo de transmisión más común y cómo esto podría relacionarse con las preferencias del consumidor y el impacto en las emisiones.
+
+```{r}
+ggplot(emisiones, aes(x = `transmission`)) +
+  geom_bar(fill = "lightcoral", color = "black") +
+  labs(title = "Frecuencia de tipos de transmisión", x = "Transmisión", y = "Frecuencia") +
+  theme_minimal()
+```
+
+Si, por ejemplo, la mayoría de los vehículos tienen transmisión automática, podría implicar un enfoque en la comodidad del conductor, pero también es esencial evaluar cómo esta elección afecta la eficiencia general y las emisiones de CO2.
+
+- **Histogramas**: Los histogramas son útiles para observar la distribución de variables cuantitativas, mostrando cómo se distribuyen los valores a lo largo de un rango. Aquí están los histogramas para algunas variables cuantitativas:
+
+**Histograma: Emisiones máximas de CO2 (gCO2/km)**
+
+se analiza la distribución de las emisiones en gramos de CO2 por kilómetro. Este análisis es fundamental porque permite identificar cómo se agrupan las emisiones de diferentes vehículos y cuáles son los niveles más comunes. Al observar este histograma, podemos detectar si hay una tendencia hacia vehículos con bajas o altas emisiones.
+
+```{r}
+ggplot(emisiones, aes(x = `emissions_max_gCO2_km`)) +
+  geom_histogram(binwidth = 10, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribución de Emisiones Máximas de CO2", x = "Emisiones Máximas (gCO2/km)", y = "Frecuencia") +
+  theme_minimal()
+```
+
+Por ejemplo, si la mayoría de los vehículos se agrupan en el extremo izquierdo del gráfico, esto indicaría que los modelos más comunes son más eficientes y producen menos emisiones, lo cual es favorable desde una perspectiva ambiental. En cambio, si vemos un número significativo de vehículos en el extremo derecho, podría sugerir que existen modelos que contribuyen en gran medida a la contaminación, lo que sería motivo de preocupación.
+
+**Histograma: Consumo máximo de combustible (l/100km)**
+
+Se investiga cómo se distribuye el consumo en litros por cada 100 kilómetros. Este análisis es crucial para comprender la eficiencia energética de los vehículos. Al observar este histograma, se pueden identificar patrones de consumo que reflejan la tecnología de los motores y el diseño de los vehículos.
+
+```{r}
+ggplot(emisiones, aes(x = `consumption_max_l_100km`)) +
+  geom_histogram(binwidth = 1, fill = "purple", color = "black", alpha = 0.7) +
+  labs(title = "Distribución del Consumo Máximo de Combustible", x = "Consumo Máximo (l/100km)", y = "Frecuencia") +
+  theme_minimal()
+```
+
+Si la mayoría de los vehículos están concentrados en un rango bajo de consumo, esto puede señalar avances en eficiencia de combustible, mientras que una concentración en el extremo alto puede indicar modelos que son menos eficientes. Esto es relevante no solo para los consumidores que buscan economizar en combustible, sino también para entender el impacto ambiental asociado al consumo de energía en el transporte.
+
+**Histograma: Peso bruto del vehículo (kg)**
+
+Se analiza la distribución del peso en kilogramos de los vehículos en el dataset. Este análisis es importante porque el peso de un vehículo influye directamente en su rendimiento, eficiencia de combustible y emisiones de CO2. Al observar el histograma, podemos identificar si hay una tendencia hacia vehículos más pesados, que generalmente consumen más combustible y generan más emisiones.
+
+```{r}
+ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`)) +
+  geom_histogram(binwidth = 100, fill = "orange", color = "black", alpha = 0.7) +
+  labs(title = "Distribución del Peso Bruto del Vehículo", x = "Peso Bruto (kg)", y = "Frecuencia") +
+  theme_minimal()
+```
+
+Por ejemplo, si la distribución muestra un aumento en la cantidad de vehículos más pesados, esto podría reflejar una tendencia hacia SUVs y camiones, lo que podría tener implicaciones negativas en el contexto de las emisiones y la sostenibilidad. En cambio, una concentración de pesos más bajos podría indicar un mercado más enfocado en vehículos eficientes y ligeros, lo cual es un punto positivo en términos de sostenibilidad ambiental.
 
 ### 3.1.3. Resúmenes numéricos
 --------Cálculo de media y mediana de emisiones--------
