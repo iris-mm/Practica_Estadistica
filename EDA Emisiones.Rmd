@@ -298,6 +298,8 @@ tabla_frecuencias_fuel_economy <- table(emisiones$`fuel_economy_index`)
 print(tabla_frecuencias_fuel_economy)
 ```
 
+
+
 ### 3.2.3. Correlación y covarianza
 
 - **Correlación de Pearson**: Se calcularán coeficientes de correlación entre variables como `Power CV` y `Max emissions gCO2/km`, para ver si existe una relación lineal fuerte entre la potencia del motor y las emisiones.
@@ -326,14 +328,16 @@ ggplot(as.data.frame(tabla_frecuencias_fuel_economy), aes(x = Var1, y = Freq)) +
 
 -------Gráfico de barras para el tipo de motor-------
 ```{r}
-ggplot(as.data.frame(tabla_frecuencias_engine_type), aes(x = Var1, y = Freq)) +
+ggplot(as.data.frame(tabla_frecuencias_engine_type), aes(x = Freq, y = Var1)) +
   geom_bar(stat = "identity", fill = "orange") +
   labs(title = "Frecuencia del Tipo de Motor",
-       x = "Tipo de Motor",
-       y = "Frecuencia") +
+       x = "Frecuencia",
+       y = "Tipo de Motor") +
   theme_minimal()
 ```
 
+Se muestran todos los tipos de motores de los vehículos estudiados.\
+Con ello, sabemos qué gran parte de los vehículos usan motores que usan como combustible gasóleo y gasolina.
 
 -------Gráficos de dispersión-------
 ```{r}
@@ -346,12 +350,22 @@ ggplot(emisiones, aes(x = `power_ice_kw`, y = `emissions_max_gCO2_km`)) +
   theme_minimal()
 ```
 
+Se muestra la relación entre las emisiones máximas de CO₂ junto al poder del motor del vehículo.\
+Cada punto en la gráfica representa un vehículo, la posición X se relaciona con la potencia del motor de este vehículo, el cual, en caso de no estar explícitamente, se aproxima al valor más cercano encontrado en la gráfica, y con ello, se establece la posición Y estableciendo su emisión máxima, teniendo así la posición final del punto.\
+Esta gráfica revela muchos datos importantes, siendo tres puntos cruciales que:\
+  - Una minoría de los vehículos funcionan en su mayor medida en combustibles no fósiles, estos son los puntos más bajos de la gráfica, lo que a su vez muestra que, si un vehículo funciona mediante estos combustibles, la potencia de su motor no afecta a las emisiones, esto se conoce gracias a que todos estos puntos tienden a establecerse entre 20 y 80 g/km de emisiones, mientras que el nivel de la potencia del motor aumenta.\
+  - La mayoría de los vehículos se establecen en un rango concreto, entre 100 y 300 g/km de emisiones, entre los 50 y 200 kW de potencia del motor, esto muestra como muchos de estos vehículos tienen algo en común a la hora de afectar a las emisiones.\n
+  - A medida que la potencia del motor aumenta, también lo hace las emisiones, pero es muy interesante la posición de los puntos, ya que no muestran una amplitud lineal. Se ve como los puntos menores a la línea que representa la potencia aumentan con ella, pero algo pasa con los puntos mayores a ella, no la siguen, sino que tienen un rango, parece que las emisiones máximas aumentan en su máximo (400 g/km), el cual sería el valor máximo de dicho rango, y de ahí se mantienen por debajo hasta llegar a la línea, siendo esta el valor mínimo del rango.
+
+
 -------Potencia (kw) vs Máximas emisiones de CO2-------
 ```{r}
 cor_power_emissions <- cor(emisiones$`power_ice_kw`, emisiones$`emissions_max_gCO2_km`, use = "complete.obs")
 cor_power_emissions
 
 ```
+
+
 
 -------Modelo de regresión lineal-------
 ```{r}
@@ -374,6 +388,11 @@ ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`, y = `emissions_max_g
   theme_minimal()
 ```
 
+Se presenta la relación entre el peso de vehículo y sus emisiones máximas.\
+Aunque parezca que no existe ninguna relación entre ambas por la distribución de los puntos, esto no podría ser cierto, debido a un pequeño comportamiento de los puntos.\
+La posición Y de los puntos parece no tener relación con el peso del vehículo que representa, pero al fijarse con más detalle, se muestra un pequeño patrón en el valor Y de los puntos, estos están alrededor de la línea representativa del peso.
+Al principio, ambos, los puntos y la línea, están en la parte inferior de la gráfica, pero al final de esta, los puntos han subido junto a la línea.\
+Esto muestra la relación que queríamos, pero el cuerpo de la gráfica también muestra otro dato importante, el cual es que, dentro del peso que tenga un vehículo, sus emisiones máximas pueden varían mucho según cada vehículo, pero siempre dentro de un rango.
 
 -------Cilindrada del motor vs Máximas emisiones de CO2-------
 ```{r}
@@ -387,7 +406,13 @@ ggplot(emisiones, aes(x = `engine_displacement_cm3`, y = `emissions_max_gCO2_km`
 
 ```
 
--------Gráficos de boxplot-------
+Aquí se muestra la relación entre el tamaño del motor y sus emisiones máximas.\
+Se aprecia un comportamiento similar a la gráfica anterior, donde los valores altamente varían, pero dentro de un rango cercano a la línea.
+Por ende, también se entiendo de dentro de un grupo de vehículos con motores de un mismo tamaño, estos generan diferentes tipos de emisiones máximas, además de a mayor tamaño, mayor cantidad emite.
+
+
+-------Gráficos de boxplot-------\
+\
 -------Emisiones según el índice de eficiencia de combustible-------
 ```{r}
 ggplot(emisiones, aes(x = `fuel_economy_index`, y = `emissions_max_gCO2_km`, fill = `fuel_economy_index`)) +
