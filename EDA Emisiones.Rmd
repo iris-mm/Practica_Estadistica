@@ -36,7 +36,7 @@ Antes de comenzar el análisis, se han descartado 6 de las 26 variables que ofre
 Con el objetivo de optimizar el análisis de las dimensiones del vehículo, se decidió crear una nueva variable denominada "frontal area". Esta variable se calcula a partir de las dimensiones de ancho y alto del vehículo (descartando la longitud). La **área frontal** es una medida que ayuda a analizar cómo las dimensiones del vehículo influyen en su resistencia aerodinámica, lo cual tiene un impacto directo en el consumo de combustible y las emisiones. Los vehículos con mayor área frontal ejercen más resistencia al viento, lo que aumenta la necesidad de energía y, por tanto, incrementa las emisiones.
 
 
-# 2. Importación de datos y carga de paquetes
+# 2. Diccionario de los datos
 ```{r}
 library(tidyverse)
 library(summarytools)
@@ -49,9 +49,8 @@ library(corrplot)
 emisiones <- readxl::read_excel("idae_emissions.xlsx")
 ```
 
-# 3. Diccionario de Datos
+## 2.1. Clasificación de las variables
 
-## 3.1. Descripción de las variables
 
 - `ID`: Identificador del coche (identificador)
 - `Model`: Modelo del coche (categórica multinivel)
