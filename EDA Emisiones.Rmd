@@ -6,7 +6,6 @@ output:
   html_document:
     toc: yes
     toc_float: yes
-
 ---
 
 ```{r setup, include=FALSE}
@@ -15,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE)
 ```
 
-# 1. Introducción y definición de objetos
+# **1. Introducción y definición de objetos**
 
 ## 1.1 Objetivo de la investigación
 
@@ -36,7 +35,7 @@ Antes de comenzar el análisis, se han descartado 6 de las 26 variables que ofre
 Con el objetivo de optimizar el análisis de las dimensiones del vehículo, se decidió crear una nueva variable denominada "frontal area". Esta variable se calcula a partir de las dimensiones de ancho y alto del vehículo (descartando la longitud). La **área frontal** es una medida que ayuda a analizar cómo las dimensiones del vehículo influyen en su resistencia aerodinámica, lo cual tiene un impacto directo en el consumo de combustible y las emisiones. Los vehículos con mayor área frontal ejercen más resistencia al viento, lo que aumenta la necesidad de energía y, por tanto, incrementa las emisiones.
 
 
-# 2. Diccionario de los datos
+# **2. Diccionario de los datos**
 ```{r}
 library(tidyverse)
 library(summarytools)
@@ -51,29 +50,66 @@ emisiones <- readxl::read_excel("idae_emissions.xlsx")
 
 ## 2.1. Clasificación de las variables
 
+En esta sección se describen y clasifican las variables disponibles en el dataset, diferenciando entre variables cuantitativas y cualitativas, y explicando cómo se usarán en el análisis.
 
-- `ID`: Identificador del coche (identificador)
-- `Model`: Modelo del coche (categórica multinivel)
-- `Engine type`: Tipo de motor (categórica multinivel)
-- `Max Consumption l/100km`: Máxima consumición de combustible en l cada 100km (numérica continua)
-- `Max emissions gCO2/km`: Máxima consumición de combustible en l cada 100km (numérica continua)
+### 2.1.1. Variables cuantitativas
+
+Las **variables cuantitativas** son aquellas que expresan cantidades numéricas y se dividen en dos subcategorías: **cuantitativas continuas** y **cuantitativas discretas**. Estas variables serán fundamentales en el análisis descriptivo y bivariante, así como para los estudios de correlación, regresión y covarianza.
+
+- **Variables cuantitativas continuas**: Son aquellas que pueden tomar cualquier valor dentro de un rango continuo:
+
+  - `Max Consumption l/100km`: Consumo máximo de combustible en litros por cada 100 km. Esta variable es clave para evaluar la eficiencia de combustible de los vehículos y su impacto en las emisiones.
+  - `Max emissions gCO2/km`: Emisiones máximas de CO2 en gramos por kilómetro. Es una de las variables dependientes más importantes en el estudio.
+  - `Min consumption l/100km`: Consumo mínimo de combustible, lo que permite ver la eficiencia mínima de un vehículo.
+  - `Min emissions gCO2/km`: Emisiones mínimas de CO2.
+  - `Width in mm`: Ancho del vehículo. Esta variable forma parte del cálculo del área frontal.
+  - `Height in mm`: Altura del vehículo. Como el ancho, esta variable es fundamental para calcular la nueva variable de "área frontal".
+  - `Gross vehicle weight in kg`: Peso bruto del vehículo. Esto es importante para estudiar cómo el peso influye en el consumo y las emisiones.
+  - `Electric consumption kwh/100km`: Consumo de energía eléctrica por cada 100 km, relevante para analizar la eficiencia energética en los vehículos eléctricos.
+  - `Power CV`: Potencia del vehículo medida en caballos de fuerza, que nos ayuda a entender la relación entre la potencia y las emisiones.
+  - `Power electric kw`: Potencia del motor eléctrico en kilovatios, para vehículos eléctricos o híbridos.
+  - `Battery capacity kwh`: Capacidad de la batería en kilovatios-hora.
+  - `Area frontal (calculada)`: Producto del ancho y altura del vehículo, usada para explorar la influencia de las dimensiones en la resistencia aerodinámica y las emisiones.
+
+### 2.1.2. Variables cualitativas
+
+Las **variables cualitativas** se refieren a categorías o clases y se dividen en **categóricas nominales** y **categóricas ordinales**. Estas se utilizarán principalmente en análisis univariantes (frecuencias, gráficos de barras) y bivariantes (tablas de contingencia, análisis comparativos).
+
+- **Variables cualitativas nominales**: Estas variables son categóricas pero no tienen un orden inherente entre sus categorías.
+
+  - `Model`: Modelo del vehículo. Aunque categórica, es interesante evaluar si ciertos modelos están asociados con mayores o menores emisiones.
+  - `Engine type`: Tipo de motor (eléctrico, híbrido, de combustión interna). Fundamental para hacer comparativas entre los diferentes tipos de motor y sus emisiones.
+  - `Market segment`: Segmento de mercado al que pertenece el vehículo (urbano, compacto, SUV, etc.). Este tipo de información permitirá comparaciones entre diferentes tipos de vehículos.
+  - `Fuel economy index`: Índice de eficiencia energética, que categoriza a los vehículos en diferentes niveles (A, B, C, etc.).
+
+- **Variables cualitativas ordinales**: Estas variables tienen un orden lógico entre sus categorías:
+
+  - `Transmission`: Tipo de transmisión (Manual, Semiautomática, Automática). Aquí se podría analizar si la transmisión tiene un impacto en el consumo o las emisiones.
+
+## 2.2. Justificación del uso de las variables en el análisis
+
+Cada una de las variables cuantitativas y cualitativas se utilizará para estudiar su impacto directo o indirecto en las emisiones de CO2. Algunas de las relaciones a explorar incluyen:
+
+- **Consumo y emisiones**: El consumo máximo y mínimo de combustible (`Max Consumption l/100km` y `Min consumption l/100km`) se relacionarán con las emisiones máximas y mínimas de CO2 (`Max emissions gCO2/km` y `Min emissions gCO2/km`). Esta relación es crucial para comprobar si los vehículos que consumen más combustible también emiten más CO2.
+
+- **Peso y emisiones**: La variable `Gross vehicle weight in kg` (peso del vehículo) será explorada en relación con las emisiones de CO2, ya que vehículos más pesados tienden a consumir más combustible y, por lo tanto, emitir más CO2.
+
+- **Potencia y emisiones**: Las variables `Power CV` (potencia en caballos de fuerza) y `Power electric kw` (potencia del motor eléctrico) se utilizarán para estudiar si la potencia de los vehículos está correlacionada con sus emisiones. Vehículos más potentes podrían tener mayores emisiones debido a un mayor consumo de combustible.
+
+- **Área frontal y emisiones**: La variable calculada `Área frontal` se utilizará para estudiar si los vehículos más grandes (con mayor área frontal) tienen mayores emisiones debido a la mayor resistencia aerodinámica.
+
+- **Segmento de mercado y emisiones**: La variable `Market segment` se empleará para hacer comparaciones entre diferentes tipos de vehículos (SUV, compactos, urbanos, etc.) y ver si ciertos segmentos tienen más emisiones de CO2 que otros.
+
 - `Engine displacement cm3`: Cilindrada del motor en cm3 (numérica discreta)
 - `Power ice kw`: Potencia del motor en combustión interna en kw (numérica discreta)
 - `Battery range km`: Autonomía de la batería en km (numérica discreta)
 - `CO2/km emissions in WLTP`: Emisiones de CO2 según el ciclo de prueba WLTP en g/km (numérica continua)
 - `Width in mm`: Ancho del vehículo en mm (numérica continua)
-- `Gross vehicle weight in kg`: M.m.a del vehículo en kg (numérica continua)
-- `Fuel economy index`: Índice de eficiencia del vehículo (categórica multinivel; A,B,C,D,E,F,G,N/A)
-- `Electric consumption kwh/100km`: Consumo de energía eléctrica cada 100km en kwh (numérica continua)
-- `Market segment`: Tipo de vehículo (categórica multinivel)
-- `Min consumption l/100km`: Mínima consumición de combustible en l cada 100km (numérica continua)
-- `Min emissions gCO2/km`: Emisiones mínimas de CO2 en g/km (numérica continua)
-- `Transmission`: Nivel de transmisión del vehículo (categórica ordinal; Manual-M, Semiautomática-SC, Automática-A)
-- `Power CV`: Potencia del motor en CV (numérica continua)
-- `Power electric kw`: Potencia del motor eléctrico en kw (numérica continua)
+
+
 - `Consumption l/100km in WLTP`: Consumo de combustible según el ciclo de prueba WLTP en g/km (numérica continua)
 - `Length in mm`: Largo del vehículo en mm (numérica continua)
-- `Height in mm`: Altura del vehículo en mm (numérica continua)
+
 - `Total seating`: Número de asientos del vehículo (numérica discreta)
 - `Type hybrid`: Tipo de híbrido (categórica dicotómica; Enchufable/Convencional)
 - `Battery capacity kwh`: Capacidad de la batería en kwh (númerica continua)
