@@ -119,6 +119,38 @@ En esta parte se examina cada variable de forma individual para describir su com
 
 Se generarán tablas de frecuencias para variables cualitativas como **Engine type**, **Market segment**, y **Transmission**, para observar cómo se distribuyen estas categorías en el dataset.
 
+<<<<<<< HEAD
+=======
+####Frecuencia de tipos de motor
+
+```{r}
+frecuencia_tipo_motor <- emisiones %>%
+  count(`Engine type`) %>%
+  arrange(desc(n))
+
+print(frecuencia_tipo_motor)
+```
+
+####Frecuencia de segmentos de mercado
+
+```{r}
+frecuencia_segmento_mercado <- emisiones %>%
+  count(`Market segment`) %>%
+  arrange(desc(n))
+
+print(frecuencia_segmento_mercado)
+```
+
+####Frecuencia de tipo de transmisión
+
+```{r}
+frecuencia_transmision <- emisiones %>%
+  count(`Transmission`) %>%
+  arrange(desc(n))
+
+print(frecuencia_transmision)
+```
+>>>>>>> carla
 
 ### 3.1.2. Gráficos de barras e histogramas
 
