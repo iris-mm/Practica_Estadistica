@@ -146,7 +146,7 @@ resumen
 
 ## 4.2 Análisis bivariado
 
-###4.2.1 Gráfico de la distribución del Índice de Eficiencia del Combustible
+### 4.2.1 Gráfico de la distribución del Índice de Eficiencia del Combustible
 ```{r}
 ggplot(emisiones, aes(x = `fuel_economy_index`)) +
   geom_bar(fill = "purple", color = "black") +
