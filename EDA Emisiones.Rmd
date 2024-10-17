@@ -131,7 +131,7 @@ frecuencia_tipo_motor <- emisiones %>%
 print(frecuencia_tipo_motor)
 ```
 
-Si hay más vehículos a gasolina o diésel, por ejemplo, las emisiones estarán dominadas por estos grupos, mientras que una alta proporción de eléctricos o híbridos indicaría una transición hacia opciones más limpias.
+La tabla de frecuencia de tipos de motor muestra que los vehículos de gasolina y diésel son los más comunes, lo que sugiere que la mayoría de las emisiones proviene de estos tipos de motores. Aunque hay una presencia notable de eléctricos e híbridos, su proporción es menor, indicando que, aunque se está avanzando hacia opciones más sostenibles, los motores de combustión interna siguen dominando el mercado. Esto refleja una transición en progreso, pero aún no consolidada hacia vehículos más limpios.
 
 **Frecuencia de segmentos de mercado**
 
@@ -145,7 +145,7 @@ frecuencia_segmento_mercado <- emisiones %>%
 print(frecuencia_segmento_mercado)
 ```
 
-Una alta presencia de SUV, por ejemplo, podría implicar emisiones promedio más altas, ya que suelen tener motores más potentes y consumen más combustible.
+La tabla de frecuencia de segmentos de mercado revela que los vehículos más comunes son las berlinas y familiares de tamaño medio, seguidos por vehículos pequeños, furgonetas grandes y SUV pequeños. Esto sugiere que, aunque hay una gran diversidad de tipos de vehículos, los segmentos de tamaño medio y pequeño dominan el mercado. La presencia significativa de SUV y furgonetas grandes podría estar asociada con mayores emisiones promedio, ya que estos vehículos suelen tener motores más grandes y consumen más combustible, lo que puede afectar los niveles generales de emisiones.
 
 **Frecuencia de tipo de transmisión**
 
@@ -159,7 +159,7 @@ frecuencia_transmision <- emisiones %>%
 print(frecuencia_transmision)
 ```
 
-Por ejemplo, las transmisiones automáticas modernas suelen ser más eficientes en el consumo de combustible que las manuales tradicionales.
+La tabla de frecuencia de tipo de transmisión muestra que la mayoría de los vehículos tienen transmisión automática, seguidos por los de transmisión manual. Esto indica una clara preferencia hacia las transmisiones automáticas, lo que podría deberse a que las versiones modernas suelen ser más eficientes en el consumo de combustible que las transmisiones manuales tradicionales. La baja presencia de transmisiones semiautomáticas refleja que este tipo de transmisión es menos común en el mercado actual. Esta distribución también puede tener implicaciones en las emisiones, ya que las transmisiones más eficientes tienden a optimizar el rendimiento del motor y reducir el consumo de combustible.
 
 ### 3.1.2. Gráficos de barras e histogramas
 
@@ -179,7 +179,7 @@ ggplot(emisiones, aes(x = `engine_type`)) +
 theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Ajuste de la inclinación
 ```
 
-Por ejemplo, si la mayoría de los vehículos son de motor diésel, esto puede indicar una tendencia hacia la eficiencia de combustible, pero también puede relacionarse con mayores emisiones de CO2 en comparación con los motores eléctricos. Esta información es útil para entender las preferencias del mercado y las implicaciones ambientales de cada tipo de motor.
+El gráfico muestra que los motores de gasóleo y gasolina son los más frecuentes, lo que indica una clara preferencia por vehículos de combustión tradicional. Aunque hay presencia de motores eléctricos e híbridos, su adopción es mucho menor. Esto sugiere que la mayoría de los vehículos podrían estar generando mayores emisiones de CO2, resaltando la necesidad de una mayor transición hacia tecnologías más limpias.
 
 **Gráfico de barras: Segmento de mercado**
 
@@ -193,7 +193,7 @@ ggplot(emisiones, aes(x = `market_segment`)) +
   theme(axis.text.x = element_text(angle = 55, hjust = 1)) # Ajuste de la inclinación
 ```
 
-Por ejemplo, si el segmento de SUVs es el más representado, esto podría implicar un mayor tamaño y peso promedio de los vehículos en comparación con los sedanes, lo que generalmente se traduce en un mayor consumo de combustible y emisiones de CO2. Así, este gráfico proporciona información valiosa sobre las tendencias del mercado y su posible impacto ambiental
+El gráfico muestra que el segmento de "Camión" es el más predominante en el mercado, seguido por "Berlina-Familiar Medio" y "Furgón Grande". Esto indica una preferencia por vehículos de mayor tamaño, lo que generalmente se asocia con un mayor consumo de combustible y emisiones de CO2.
 
 **Gráfico de barras: Tipo de transmisión**
 
@@ -206,13 +206,13 @@ ggplot(emisiones, aes(x = `transmission`)) +
   theme_minimal()
 ```
 
-Si, por ejemplo, la mayoría de los vehículos tienen transmisión automática, podría implicar un enfoque en la comodidad del conductor, pero también es esencial evaluar cómo esta elección afecta la eficiencia general y las emisiones de CO2.
+El gráfico muestra que la mayoría de los vehículos tienen transmisión automática, lo que indica una clara preferencia del consumidor por la comodidad y facilidad de manejo.
 
 - **Histogramas**: Los histogramas son útiles para observar la distribución de variables cuantitativas, mostrando cómo se distribuyen los valores a lo largo de un rango. Aquí están los histogramas para algunas variables cuantitativas:
 
 **Histograma: Emisiones máximas de CO2 (gCO2/km)**
 
-se analiza la distribución de las emisiones en gramos de CO2 por kilómetro. Este análisis es fundamental porque permite identificar cómo se agrupan las emisiones de diferentes vehículos y cuáles son los niveles más comunes. Al observar este histograma, podemos detectar si hay una tendencia hacia vehículos con bajas o altas emisiones.
+Se analiza la distribución de las emisiones en gramos de CO2 por kilómetro. Este análisis es fundamental porque permite identificar cómo se agrupan las emisiones de diferentes vehículos y cuáles son los niveles más comunes. Al observar este histograma, podemos detectar si hay una tendencia hacia vehículos con bajas o altas emisiones.
 
 ```{r}
 ggplot(emisiones, aes(x = `emissions_max_gCO2_km`)) +
@@ -221,7 +221,7 @@ ggplot(emisiones, aes(x = `emissions_max_gCO2_km`)) +
   theme_minimal()
 ```
 
-Por ejemplo, si la mayoría de los vehículos se agrupan en el extremo izquierdo del gráfico, esto indicaría que los modelos más comunes son más eficientes y producen menos emisiones, lo cual es favorable desde una perspectiva ambiental. En cambio, si vemos un número significativo de vehículos en el extremo derecho, podría sugerir que existen modelos que contribuyen en gran medida a la contaminación, lo que sería motivo de preocupación.
+La agrupación en el centro sugiere una mezcla de eficiencia y moderación en las emisiones, lo que indica que hay un camino hacia seguir mejorando para alcanzar niveles más bajos de contaminación.
 
 **Histograma: Consumo máximo de combustible (l/100km)**
 
@@ -234,7 +234,7 @@ ggplot(emisiones, aes(x = `consumption_max_l_100km`)) +
   theme_minimal()
 ```
 
-Si la mayoría de los vehículos están concentrados en un rango bajo de consumo, esto puede señalar avances en eficiencia de combustible, mientras que una concentración en el extremo alto puede indicar modelos que son menos eficientes. Esto es relevante no solo para los consumidores que buscan economizar en combustible, sino también para entender el impacto ambiental asociado al consumo de energía en el transporte.
+La distribución del consumo máximo de combustible muestra que la mayoría de los vehículos analizados son eficientes, con un consumo bajo en litros por cada 100 km. Sin embargo, la presencia de un modelo destacado en el extremo alto del histograma indica que existen vehículos menos eficientes que pueden afectar negativamente las emisiones de CO2. Esto sugiere la necesidad de continuar promoviendo tecnologías más sostenibles y de educar a los consumidores sobre el impacto ambiental del consumo de combustible.
 
 **Histograma: Peso bruto del vehículo (kg)**
 
@@ -247,7 +247,7 @@ ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`)) +
   theme_minimal()
 ```
 
-Por ejemplo, si la distribución muestra un aumento en la cantidad de vehículos más pesados, esto podría reflejar una tendencia hacia SUVs y camiones, lo que podría tener implicaciones negativas en el contexto de las emisiones y la sostenibilidad. En cambio, una concentración de pesos más bajos podría indicar un mercado más enfocado en vehículos eficientes y ligeros, lo cual es un punto positivo en términos de sostenibilidad ambiental.
+La concentración de la mayoría de los vehículos en el lado izquierdo del histograma indica que el dataset está compuesto en gran parte por vehículos más ligeros. Esto sugiere una tendencia hacia modelos más eficientes en consumo de combustible y menores emisiones de CO2, lo cual es favorable desde una perspectiva ambiental. Además, implica que hay menos vehículos pesados, como SUVs o camiones, lo que contribuye positivamente a la sostenibilidad.
 
 ### 3.1.3. Resúmenes numéricos
 --------Cálculo de media y mediana de emisiones--------
