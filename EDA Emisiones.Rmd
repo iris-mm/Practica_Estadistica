@@ -431,7 +431,10 @@ ggplot(emisiones, aes(x = `fuel_economy_index`, y = `emissions_max_gCO2_km`, fil
   theme_minimal()
 ```
 
+A pesar de que muchos no estén clasificados, se pueden conocer datos muy interesantes de cada uno de los grupos.\
 
+- El rango de emisiones del grupo A es extremadamente alto, teniendo el RIC más grande (ignorando los no calificados).
+- El rango B y C es el más y segundo más pequeño respectivamente, esto puede ser debido a la generalización; por las gráficas anteriores, vimos como los grupos B, C, y D eran los vehículos con el mayor tipo de motor que circula, por lo que podemos pensar que estas bajas RIC puede deberse a su gran generalización, donde a demás de su tipo de motor, más características pueden ser similares entre los vehículos, haciendo que el rango de sus emisiones sea muy pequeño.
 
 -------Emisiones según el tipo de motor-------
 ```{r}
@@ -440,8 +443,12 @@ ggplot(emisiones, aes(x = `engine_type`, y = `emissions_max_gCO2_km`, fill = `en
   labs(title = "Emisiones de CO2 por Tipo de Motor",
        x = "Tipo de Motor",
        y = "Max emissions gCO2/km") +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Ajuste de la inclinación
 ```
+
+Por lo que se aprecia, el tipo de motor parece tener poca relación con las emisiones, quitando medidas obvias, como que los coches eléctricos o similares no generan emisiones o muy pocas respectivamente, pero algo distinto pasa con los vehículos con otros motores.\
+Los vehículos con motores de combustible fósil (como gasóleo y gasolina) tienen una alta cantidad de emisiones, a la vez que tienen una alta cantidad de valores atípicos; esto puede ser por lo que dijimos anteriormente, al ser los tipos de motores más usados, muchos de los vehículos tiene características comunes entre sí, de ahí el pequeño tamaño del RIC, pero por ello, también significa que puede haber vehículos especiales con este tipo de motor, haciendo que estos consuman más o menos, en este caso, todos los vehículos que se salen del "vehículo característico" de este tipo de motores, tienen siempre una mayor cantidad de emisiones frente a los vehículos "normales" con el mismo motor.
 
 -------Modelo de regresión lineal-------
 
@@ -449,8 +456,6 @@ ggplot(emisiones, aes(x = `engine_type`, y = `emissions_max_gCO2_km`, fill = `en
 modelo <- lm(`emissions_max_gCO2_km` ~ `power_ice_kw`, data = emisiones)
 summary(modelo)
 ```
-
-
 
 
 
