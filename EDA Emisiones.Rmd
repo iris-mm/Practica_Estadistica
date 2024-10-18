@@ -12,6 +12,14 @@ output:
 knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE)
+
+COLOR_Frequency = "black"
+COLOR_MaxEmissions = "grey"
+COLOR_EngineType = "orange"
+COLOR_Consumption = "pink"
+COLOR_EconomyIndex = "lightblue"
+COLOR_PowerIce = "red"
+COLOR_Weigth = "purple"
 ```
 
 # **1. Introducción y definición de objetos**
@@ -173,7 +181,7 @@ Se analiza la frecuencia de los distintos tipos de motores presentes en el datas
 
 ```{r}
 ggplot(emisiones, aes(x = `engine_type`)) +
-  geom_bar(fill = "skyblue", color = "black") +
+  geom_bar(fill = COLOR_EngineType) +
   labs(title = "Frecuencia de tipos de motor", x = "Tipo de motor", y = "Frecuencia") +
   theme_minimal() +
 theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Ajuste de la inclinación
@@ -187,7 +195,7 @@ Se evalúa la distribución de los vehículos según su categoría (como sedanes
 
 ```{r}
 ggplot(emisiones, aes(x = `market_segment`)) +
-  geom_bar(fill = "lightgreen", color = "black") +
+  geom_bar(fill = "blue", alpha = 0.6) +
   labs(title = "Frecuencia de segmentos de mercado", x = "Segmento de mercado", y = "Frecuencia") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 55, hjust = 1)) # Ajuste de la inclinación
@@ -201,7 +209,7 @@ Se examina la distribución de los vehículos según su sistema de transmisión 
 
 ```{r}
 ggplot(emisiones, aes(x = `transmission`)) +
-  geom_bar(fill = "lightcoral", color = "black") +
+  geom_bar(fill = "lightcoral") +
   labs(title = "Frecuencia de tipos de transmisión", x = "Transmisión", y = "Frecuencia") +
   theme_minimal()
 ```
@@ -216,7 +224,7 @@ se analiza la distribución de las emisiones en gramos de CO2 por kilómetro. Es
 
 ```{r}
 ggplot(emisiones, aes(x = `emissions_max_gCO2_km`)) +
-  geom_histogram(binwidth = 10, fill = "blue", color = "black", alpha = 0.7) +
+  geom_histogram(binwidth = 10, fill = COLOR_MaxEmissions, color =  COLOR_MaxEmissions, alpha = 0.7) +
   labs(title = "Distribución de Emisiones Máximas de CO2", x = "Emisiones Máximas (gCO2/km)", y = "Frecuencia") +
   theme_minimal()
 ```
@@ -229,7 +237,7 @@ Se investiga cómo se distribuye el consumo en litros por cada 100 kilómetros. 
 
 ```{r}
 ggplot(emisiones, aes(x = `consumption_max_l_100km`)) +
-  geom_histogram(binwidth = 1, fill = "purple", color = "black", alpha = 0.7) +
+  geom_histogram(binwidth = 1, fill = COLOR_Consumption, color = COLOR_Consumption, alpha = 0.7) +
   labs(title = "Distribución del Consumo Máximo de Combustible", x = "Consumo Máximo (l/100km)", y = "Frecuencia") +
   theme_minimal()
 ```
@@ -242,7 +250,7 @@ Se analiza la distribución del peso en kilogramos de los vehículos en el datas
 
 ```{r}
 ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`)) +
-  geom_histogram(binwidth = 100, fill = "orange", color = "black", alpha = 0.7) +
+  geom_histogram(binwidth = 100, fill = COLOR_Weigth, color = "black", alpha = 0.7) +
   labs(title = "Distribución del Peso Bruto del Vehículo", x = "Peso Bruto (kg)", y = "Frecuencia") +
   theme_minimal()
 ```
@@ -284,7 +292,7 @@ resumen
 --------Gráfico de la distribución del Índice de Eficiencia del Combustible--------
 ```{r}
 ggplot(emisiones, aes(x = `fuel_economy_index`)) +
-  geom_bar(fill = "purple", color = "black") +
+  geom_bar(fill = COLOR_EconomyIndex) +
   labs(title = "Distribución del Índice de Eficiencia del Combustible",
        x = "Índice de Eficiencia",
        y = "Frecuencia") +
@@ -321,7 +329,7 @@ Las cantidades y diferencias entre ellos se verá mejor en la gráfica de tipos 
 -------Gráfico de barras para el tipo de motor-------
 ```{r}
 ggplot(as.data.frame(tabla_frecuencias_engine_type), aes(x = Freq, y = Var1)) +
-  geom_bar(stat = "identity", fill = "orange") +
+  geom_bar(stat = "identity", fill = COLOR_EngineType) +
   labs(title = "Frecuencia del Tipo de Motor",
        x = "Frecuencia",
        y = "Tipo de Motor") +
@@ -334,7 +342,7 @@ Con ello, sabemos qué gran parte de los vehículos usan motores que usan como c
 -------Gráfico de barras para el índice de eficiencia de combustible-------
 ```{r}
 ggplot(as.data.frame(tabla_frecuencias_fuel_economy), aes(x = Var1, y = Freq)) +
-  geom_bar(stat = "identity", fill = "lightblue") +
+  geom_bar(stat = "identity", fill = COLOR_EconomyIndex, alpha = 0.8) +
   labs(title = "Frecuencia del Índice de Eficiencia de Combustible",
        x = "Índice de Eficiencia",
        y = "Frecuencia") +
@@ -347,8 +355,8 @@ Esta se encuentra en que muchos de los vehículos se encuentran en el apartado C
 -------Gráficos de dispersión-------
 ```{r}
 ggplot(emisiones, aes(x = `power_ice_kw`, y = `emissions_max_gCO2_km`)) +
-  geom_point(color = "red", size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  geom_point(color = COLOR_MaxEmissions, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = COLOR_PowerIce) +
   labs(title = "Relación entre Potencia del motor y Emisiones de CO2",
        x = "Potencia del Motor (kw)",
        y = "Max emissions gCO2/km") +
@@ -379,17 +387,14 @@ modelo <- lm(`emissions_max_gCO2_km` ~ `power_ice_kw`, data = emisiones)
 summary(modelo)
 ```
 
-
-
-
-
-
+Existe una relación donde por cada 0.3 kW de energía se emiten un aproximado de 120 g/km de CO₂.\
+Con ello, se genera una relación de 0.145, lo cual implica que, la potencia del motor del vehículo no se relaciona directamente con las emisiones máximas.
 
 -------Peso del vehículo vs Máximas emisiones de CO2-------
 ```{r}
 ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`, y = `emissions_max_gCO2_km`)) +
-  geom_point(color = "purple", size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  geom_point(color = COLOR_MaxEmissions, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = COLOR_Weigth) +
   labs(title = "Relación entre Peso del Vehículo y Emisiones de CO2",
        x = "Peso del Vehículo (kg)",
        y = "Max emissions gCO2/km") +
@@ -405,8 +410,8 @@ Esto muestra la relación que queríamos, pero el cuerpo de la gráfica también
 -------Cilindrada del motor vs Máximas emisiones de CO2-------
 ```{r}
 ggplot(emisiones, aes(x = `engine_displacement_cm3`, y = `emissions_max_gCO2_km`)) +
-  geom_point(color = "cyan", size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  geom_point(color = COLOR_MaxEmissions, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "green") +
   labs(title = "Relación entre Cilindrada del Motor y Emisiones de CO2",
        x = "Cilindrada del Motor (cm3)",
        y = "Max emissions gCO2/km") +
@@ -449,15 +454,6 @@ ggplot(emisiones, aes(x = `engine_type`, y = `emissions_max_gCO2_km`, fill = `en
 
 Por lo que se aprecia, el tipo de motor parece tener poca relación con las emisiones, quitando medidas obvias, como que los coches eléctricos o similares no generan emisiones o muy pocas respectivamente, pero algo distinto pasa con los vehículos con otros motores.\
 Los vehículos con motores de combustible fósil (como gasóleo y gasolina) tienen una alta cantidad de emisiones, a la vez que tienen una alta cantidad de valores atípicos; esto puede ser por lo que dijimos anteriormente, al ser los tipos de motores más usados, muchos de los vehículos tiene características comunes entre sí, de ahí el pequeño tamaño del RIC, pero por ello, también significa que puede haber vehículos especiales con este tipo de motor, haciendo que estos consuman más o menos, en este caso, todos los vehículos que se salen del "vehículo característico" de este tipo de motores, tienen siempre una mayor cantidad de emisiones frente a los vehículos "normales" con el mismo motor.
-
--------Modelo de regresión lineal-------
-
-```{r}
-modelo <- lm(`emissions_max_gCO2_km` ~ `power_ice_kw`, data = emisiones)
-summary(modelo)
-```
-
-
 
 
 # **4. Tabla comparativa**
