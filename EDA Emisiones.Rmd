@@ -288,18 +288,22 @@ resumen
 
 ## 3.2. Análisis bivariante
 
+En el análisis bivariante, se estudian las relaciones entre dos variables a la vez para identificar patrones y dependencias.
+
 ### 3.2.1. Tablas de contingencia
+
+Se crearán tablas de contingencia para explorar la relación entre dos variables cualitativas, como Engine type y Market segment, lo que permitirá ver si ciertos tipos de motor están asociados a tipos específicos de vehículos.
+
 --------Gráfico de la distribución del Índice de Eficiencia del Combustible--------
 ```{r}
-ggplot(emisiones, aes(x = `fuel_economy_index`)) +
-  geom_bar(fill = COLOR_EconomyIndex) +
-  labs(title = "Distribución del Índice de Eficiencia del Combustible",
-       x = "Índice de Eficiencia",
-       y = "Frecuencia") +
-  theme_minimal()
+tabla_contingencia <- table(emisiones$`Engine type`, emisiones$`Market segment`)
+print(tabla_contingencia)
 ```
 
 ### 3.2.2. Gráfico de dispersión
+
+Se usarán gráficos de dispersión para explorar relaciones entre variables cuantitativas, como el consumo de combustible (Max Consumption l/100km) y las emisiones de CO2 (Max emissions gCO2/km), o entre el área frontal (Área frontal) y las emisiones de CO2.
+
 -------Tabla de frecuencias para "Fuel economy index"-------
 ```{r}
 tabla_frecuencias_fuel_economy <- table(emisiones$`fuel_economy_index`)
