@@ -1,0 +1,511 @@
+---
+title: "Práctica 1: Estadística descriptiva"
+date: "Estadística - Curso 2024/2025"
+
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+
+COLOR_Frequency = "black"
+COLOR_MaxEmissions = "grey"
+COLOR_EngineType = "orange"
+COLOR_Consumption = "pink"
+COLOR_EconomyIndex = "lightblue"
+COLOR_PowerIce = "red"
+COLOR_Weigth = "purple"
+```
+
+# **1. Introducción y definición de objetos**
+
+## 1.1 Objetivo de la investigación
+
+El objetivo de esta investigación es determinar la forma en que algunas características de distintos vehículos como son su tamaño, peso o potencia de motor; influyen en las emisiones que liberan al medioambiente.\
+Para ello nos basamos en datos recogidos en España a lo largo de 2022.
+
+## 1.2. Variables excluidas
+Antes de comenzar el análisis, se han descartado 6 de las 26 variables que ofrece el dataset, ya que no se consideran relevantes para el estudio o contienen una muestra de datos demasiado pequeña. Las variables excluidas son las siguientes:
+
+- **ID**: Es un identificador que no aporta valor al análisis de emisiones.
+- **Total seating**: Se cubre mediante otras variables que ya proporcionan suficiente información acerca de las dimensiones del vehículo.
+- **CO2/km emissions in WLTP** y **Consumption l/100km in WLTP**: Estas variables han sido descartadas ya que el dataset ofrece otras similares que resultan más útiles para el estudio (como el consumo máximo y mínimo de combustible y las emisiones de CO2).
+- **Type hybrid**: Esta variable ha sido excluida debido a la falta de suficientes datos para que sea relevante en el análisis.
+
+
+## 1.3. Nueva variable: Área frontal
+
+Una variable nueva, "Área frontal", ha sido creada a partir de las dimensiones del ancho y la altura del vehículo. Esta variable tiene como propósito analizar cómo el tamaño del vehículo influye en su resistencia aerodinámica y, por ende, en el consumo de combustible y las emisiones de CO2. Cuanto mayor sea el área frontal de un vehículo, mayor será la resistencia al viento que experimenta, lo que, a su vez, eleva el consumo de energía y las emisiones de CO2. Esta variable será clave para estudiar la relación entre las dimensiones del vehículo y sus emisiones./
+Se inicializará al comenzar el ánalisis univariante.
+
+# **2. Diccionario de los datos**
+```{r}
+library(tidyverse)
+library(summarytools)
+library(ggplot2)
+library(readxl)
+library(dplyr)
+library(knitr)
+library(reshape2)
+library(corrplot)
+emisiones <- readxl::read_excel("idae_emissions.xlsx")
+```
+
+## 2.1. Clasificación de las variables
+
+En esta sección se describen y clasifican las variables disponibles en el dataset, diferenciando entre variables cuantitativas y cualitativas, y explicando cómo se usarán en el análisis.
+
+### 2.1.1. Variables cuantitativas
+
+Las **variables cuantitativas** son aquellas que expresan cantidades numéricas y se dividen en dos subcategorías: **cuantitativas continuas** y **cuantitativas discretas**. Estas variables serán fundamentales en el análisis descriptivo y bivariante, así como para los estudios de correlación, regresión y covarianza.
+
+- **Variables cuantitativas continuas**: Son aquellas que pueden tomar cualquier valor dentro de un rango continuo:
+
+  - `Max Consumption l/100km`: Consumo máximo de combustible en litros por cada 100 km. Esta variable es clave para evaluar la eficiencia de combustible de los vehículos y su impacto en las emisiones.
+  - `Max emissions gCO2/km`: Emisiones máximas de CO2 en gramos por kilómetro. Es una de las variables dependientes más importantes en el estudio.
+  - `Min consumption l/100km`: Consumo mínimo de combustible, lo que permite ver la eficiencia mínima de un vehículo.
+  - `Min emissions gCO2/km`: Emisiones mínimas de CO2.
+  - `Width in mm`: Ancho del vehículo. Esta variable forma parte del cálculo del área frontal.
+  - `Height in mm`: Altura del vehículo. Como el ancho, esta variable es fundamental para calcular la nueva variable de "área frontal".
+  - `Gross vehicle weight in kg`: Peso bruto del vehículo. Esto es importante para estudiar cómo el peso influye en el consumo y las emisiones.
+  - `Electric consumption kwh/100km`: Consumo de energía eléctrica por cada 100 km, relevante para analizar la eficiencia energética en los vehículos eléctricos.
+  - `Power CV`: Potencia del vehículo medida en caballos de fuerza, que nos ayuda a entender la relación entre la potencia y las emisiones.
+  - `Power electric kw`: Potencia del motor eléctrico en kilovatios, para vehículos eléctricos o híbridos.
+  - `Battery capacity kwh`: Capacidad de la batería en kilovatios-hora.
+  - `Area frontal (calculada)`: Producto del ancho y altura del vehículo, usada para explorar la influencia de las dimensiones en la resistencia aerodinámica y las emisiones.
+  
+- **Variables cuantitativas discretas**: Estas son variables numéricas que toman un número finito de valores, normalmente enteros.
+  - `Engine displacement cm3`: Cilindrada del motor en centímetros cúbicos. La cilindrada suele estar relacionada con la potencia del motor y, por ende, con las emisiones.
+  - `Power ice kw`: Potencia del motor de combustión interna en kilovatios.
+  - `Battery range km`: Autonomía de la batería en kilómetros. Importante para estudiar la eficiencia en vehículos eléctricos.
+
+### 2.1.2. Variables cualitativas
+
+Las **variables cualitativas** se refieren a categorías o clases y se dividen en **categóricas nominales** y **categóricas ordinales**. Estas se utilizarán principalmente en análisis univariantes (frecuencias, gráficos de barras) y bivariantes (tablas de contingencia, análisis comparativos).
+
+- **Variables cualitativas nominales**: Estas variables son categóricas pero no tienen un orden inherente entre sus categorías.
+
+  - `Model`: Modelo del vehículo. Aunque categórica, es interesante evaluar si ciertos modelos están asociados con mayores o menores emisiones.
+  - `Engine type`: Tipo de motor (eléctrico, híbrido, de combustión interna). Fundamental para hacer comparativas entre los diferentes tipos de motor y sus emisiones.
+  - `Market segment`: Segmento de mercado al que pertenece el vehículo (urbano, compacto, SUV, etc.). Este tipo de información permitirá comparaciones entre diferentes tipos de vehículos.
+  - `Fuel economy index`: Índice de eficiencia energética, que categoriza a los vehículos en diferentes niveles (A, B, C, etc.).
+
+- **Variables cualitativas ordinales**: Estas variables tienen un orden lógico entre sus categorías:
+
+  - `Transmission`: Tipo de transmisión (Manual, Semiautomática, Automática). Aquí se podría analizar si la transmisión tiene un impacto en el consumo o las emisiones.
+
+## 2.2. Justificación del uso de las variables en el análisis
+
+Cada una de las variables cuantitativas y cualitativas se utilizará para estudiar su impacto directo o indirecto en las emisiones de CO2. Algunas de las relaciones a explorar incluyen:
+
+- **Consumo y emisiones**: El consumo máximo y mínimo de combustible (`Max Consumption l/100km` y `Min consumption l/100km`) se relacionarán con las emisiones máximas y mínimas de CO2 (`Max emissions gCO2/km` y `Min emissions gCO2/km`). Esta relación es crucial para comprobar si los vehículos que consumen más combustible también emiten más CO2.
+
+- **Peso y emisiones**: La variable `Gross vehicle weight in kg` (peso del vehículo) será explorada en relación con las emisiones de CO2, ya que vehículos más pesados tienden a consumir más combustible y, por lo tanto, emitir más CO2.
+
+- **Potencia y emisiones**: Las variables `Power CV` (potencia en caballos de fuerza) y `Power electric kw` (potencia del motor eléctrico) se utilizarán para estudiar si la potencia de los vehículos está correlacionada con sus emisiones. Vehículos más potentes podrían tener mayores emisiones debido a un mayor consumo de combustible.
+
+- **Área frontal y emisiones**: La variable calculada `Área frontal` se utilizará para estudiar si los vehículos más grandes (con mayor área frontal) tienen mayores emisiones debido a la mayor resistencia aerodinámica.
+
+- **Segmento de mercado y emisiones**: La variable `Market segment` se empleará para hacer comparaciones entre diferentes tipos de vehículos (SUV, compactos, urbanos, etc.) y ver si ciertos segmentos tienen más emisiones de CO2 que otros.
+
+# **3. Análisis exploratorio de datos**
+
+## 3.1. Análisis univariado
+
+En esta parte se examina cada variable de forma individual para describir su comportamiento. Este análisis incluye gráficos y resúmenes numéricos.
+
+###Área frontal
+```{r}
+ emisiones <- emisiones %>%
+  mutate(area_frontal_m2 = (width_mm / 1000) * (height_mm / 1000))
+```
+
+### 3.1.1. Tablas de frecuencias
+
+Se generarán tablas de frecuencias para las variables cualitativas **Engine type**, **Market segment**, y **Transmission**, con objeto de observar cómo se distribuyen estas categorías en el dataset.
+
+**Frecuencia de tipos de motor**
+
+La tabla muestra cuántos vehículos pertenecen a cada tipo de motor (gasolina, diésel, eléctrico, híbrido, etc.). Esto es importante porque permite ver qué tecnología es la más común y su impacto en las emisiones. 
+
+```{r}
+frecuencia_tipo_motor <- emisiones %>%
+  count(`engine_type`) %>%
+  arrange(desc(n))
+
+print(frecuencia_tipo_motor)
+```
+
+La tabla de frecuencia de tipos de motor muestra que los vehículos de gasolina y diésel son los más comunes, lo que sugiere que la mayoría de las emisiones proviene de estos tipos de motores. Aunque hay una presencia notable de eléctricos e híbridos, su proporción es menor, indicando que, aunque se está avanzando hacia opciones más sostenibles, los motores de combustión interna siguen dominando el mercado. Esto refleja una transición en progreso, pero aún no consolidada hacia vehículos más limpios.
+
+**Frecuencia de segmentos de mercado**
+
+La tabla refleja la cantidad de vehículos en diferentes categorías, como compactos, SUV, sedanes, deportivos, entre otros. Esto nos ayuda a identificar qué tipos de vehículos son más comunes y cómo se relacionan con las emisiones.
+
+```{r}
+frecuencia_segmento_mercado <- emisiones %>%
+  count(`market_segment`) %>%
+  arrange(desc(n))
+
+print(frecuencia_segmento_mercado)
+```
+
+La tabla de frecuencia de segmentos de mercado revela que los vehículos más comunes son las berlinas y familiares de tamaño medio, seguidos por vehículos pequeños, furgonetas grandes y SUV pequeños. Esto sugiere que, aunque hay una gran diversidad de tipos de vehículos, los segmentos de tamaño medio y pequeño dominan el mercado. La presencia significativa de SUV y furgonetas grandes podría estar asociada con mayores emisiones promedio, ya que estos vehículos suelen tener motores más grandes y consumen más combustible, lo que puede afectar los niveles generales de emisiones.
+
+**Frecuencia de tipo de transmisión**
+
+La tabla muestra cuántos vehículos tienen transmisión manual, semiautomática o automática. Esto nos permite ver si hay una preferencia clara hacia ciertos tipos de transmisión que podrían afectar la eficiencia y las emisiones del vehículo. 
+
+```{r}
+frecuencia_transmision <- emisiones %>%
+  count(`transmission`) %>%
+  arrange(desc(n))
+
+print(frecuencia_transmision)
+```
+
+La tabla de frecuencia de tipo de transmisión muestra que la mayoría de los vehículos tienen transmisión automática, seguidos por los de transmisión manual. Esto indica una clara preferencia hacia las transmisiones automáticas, lo que podría deberse a que las versiones modernas suelen ser más eficientes en el consumo de combustible que las transmisiones manuales tradicionales. La baja presencia de transmisiones semiautomáticas refleja que este tipo de transmisión es menos común en el mercado actual. Esta distribución también puede tener implicaciones en las emisiones, ya que las transmisiones más eficientes tienden a optimizar el rendimiento del motor y reducir el consumo de combustible.
+
+### 3.1.2. Gráficos de barras e histogramas
+
+Utilizaremos Gráficos de barras e Historiogramas para visualizar la distribución de variables cuantitativas y cualitativas, como las emisiones máximas de CO2 o el tipo de motor, mediante gráficos de barras e histogramas.
+
+- **Gráficos de barras**: Los gráficos de barras permiten visualizar la frecuencia de las categorías de variables cualitativas. A continuación, se muestran los gráficos de barras para las mismas variables de las tablas de frecuencia:
+
+**Gráfico de barras: Tipos de motor**
+
+Se analiza la frecuencia de los distintos tipos de motores presentes en el dataset. Este análisis es relevante porque los diferentes tipos de motores (como gasolina, diésel, eléctrico, híbrido, entre otros) pueden tener un impacto significativo en las emisiones de CO2 y en la eficiencia del combustible. Al observar este gráfico, se puede identificar qué tipo de motor es más común entre los vehículos analizados.
+
+```{r}
+ggplot(emisiones, aes(x = `engine_type`)) +
+  geom_bar(fill = COLOR_EngineType) +
+  labs(title = "Frecuencia de tipos de motor", x = "Tipo de motor", y = "Frecuencia") +
+  theme_minimal() +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Ajuste de la inclinación
+```
+
+El gráfico muestra que los motores de gasóleo y gasolina son los más frecuentes, lo que indica una clara preferencia por vehículos de combustión tradicional. Aunque hay presencia de motores eléctricos e híbridos, su adopción es mucho menor. Esto sugiere que la mayoría de los vehículos podrían estar generando mayores emisiones de CO2, resaltando la necesidad de una mayor transición hacia tecnologías más limpias.
+
+**Gráfico de barras: Segmento de mercado**
+
+Se evalúa la distribución de los vehículos según su categoría (como sedanes, SUVs, compactos, etc.). Este análisis es importante porque diferentes segmentos de mercado suelen tener diferentes características y, por lo tanto, diferentes patrones de consumo y emisiones. Al observar la frecuencia de cada segmento, se pueden identificar cuáles son los más populares.
+
+```{r}
+ggplot(emisiones, aes(x = `market_segment`)) +
+  geom_bar(fill = "blue", alpha = 0.6) +
+  labs(title = "Frecuencia de segmentos de mercado", x = "Segmento de mercado", y = "Frecuencia") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 55, hjust = 1)) # Ajuste de la inclinación
+```
+
+El gráfico muestra que el segmento de "Camión" es el más predominante en el mercado, seguido por "Berlina-Familiar Medio" y "Furgón Grande". Esto indica una preferencia por vehículos de mayor tamaño, lo que generalmente se asocia con un mayor consumo de combustible y emisiones de CO2.
+
+**Gráfico de barras: Tipo de transmisión**
+
+Se examina la distribución de los vehículos según su sistema de transmisión (manual, automática, semiautomática). Este análisis es relevante porque la elección del tipo de transmisión puede influir en el rendimiento del vehículo y en su eficiencia de combustible. Por ejemplo, los vehículos automáticos tienden a ser más fáciles de manejar, lo que puede hacer que sean más populares, mientras que los manuales pueden ofrecer un mejor control del consumo de combustible en manos de conductores experimentados. Al observar este gráfico, se puede determinar cuál es el tipo de transmisión más común y cómo esto podría relacionarse con las preferencias del consumidor y el impacto en las emisiones.
+
+```{r}
+ggplot(emisiones, aes(x = `transmission`)) +
+  geom_bar(fill = "lightcoral") +
+  labs(title = "Frecuencia de tipos de transmisión", x = "Transmisión", y = "Frecuencia") +
+  theme_minimal()
+```
+
+El gráfico muestra que la mayoría de los vehículos tienen transmisión automática, lo que indica una clara preferencia del consumidor por la comodidad y facilidad de manejo.
+
+- **Histogramas**: Los histogramas son útiles para observar la distribución de variables cuantitativas, mostrando cómo se distribuyen los valores a lo largo de un rango. Aquí están los histogramas para algunas variables cuantitativas:
+
+**Histograma: Emisiones máximas de CO2 (gCO2/km)**
+
+Se analiza la distribución de las emisiones en gramos de CO2 por kilómetro. Este análisis es fundamental porque permite identificar cómo se agrupan las emisiones de diferentes vehículos y cuáles son los niveles más comunes. Al observar este histograma, podemos detectar si hay una tendencia hacia vehículos con bajas o altas emisiones.
+
+```{r}
+ggplot(emisiones, aes(x = `emissions_max_gCO2_km`)) +
+  geom_histogram(binwidth = 10, fill = COLOR_MaxEmissions, color =  COLOR_MaxEmissions, alpha = 0.7) +
+  labs(title = "Distribución de Emisiones Máximas de CO2", x = "Emisiones Máximas (gCO2/km)", y = "Frecuencia") +
+  theme_minimal()
+```
+
+La agrupación en el centro sugiere una mezcla de eficiencia y moderación en las emisiones, lo que indica que hay un camino hacia seguir mejorando para alcanzar niveles más bajos de contaminación.
+
+**Histograma: Consumo máximo de combustible (l/100km)**
+
+Se investiga cómo se distribuye el consumo en litros por cada 100 kilómetros. Este análisis es crucial para comprender la eficiencia energética de los vehículos. Al observar este histograma, se pueden identificar patrones de consumo que reflejan la tecnología de los motores y el diseño de los vehículos.
+
+```{r}
+ggplot(emisiones, aes(x = `consumption_max_l_100km`)) +
+  geom_histogram(binwidth = 1, fill = COLOR_Consumption, color = COLOR_Consumption, alpha = 0.7) +
+  labs(title = "Distribución del Consumo Máximo de Combustible", x = "Consumo Máximo (l/100km)", y = "Frecuencia") +
+  theme_minimal()
+```
+
+La distribución del consumo máximo de combustible muestra que la mayoría de los vehículos analizados son eficientes, con un consumo bajo en litros por cada 100 km. Sin embargo, la presencia de un modelo destacado en el extremo alto del histograma indica que existen vehículos menos eficientes que pueden afectar negativamente las emisiones de CO2. Esto sugiere la necesidad de continuar promoviendo tecnologías más sostenibles y de educar a los consumidores sobre el impacto ambiental del consumo de combustible.
+
+**Histograma: Peso bruto del vehículo (kg)**
+
+Se analiza la distribución del peso en kilogramos de los vehículos en el dataset. Este análisis es importante porque el peso de un vehículo influye directamente en su rendimiento, eficiencia de combustible y emisiones de CO2. Al observar el histograma, podemos identificar si hay una tendencia hacia vehículos más pesados, que generalmente consumen más combustible y generan más emisiones.
+
+```{r}
+ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`)) +
+  geom_histogram(binwidth = 100, fill = COLOR_Weigth, color = "black", alpha = 0.7) +
+  labs(title = "Distribución del Peso Bruto del Vehículo", x = "Peso Bruto (kg)", y = "Frecuencia") +
+  theme_minimal()
+```
+
+La concentración de la mayoría de los vehículos en el lado izquierdo del histograma indica que el dataset está compuesto en gran parte por vehículos más ligeros. Esto sugiere una tendencia hacia modelos más eficientes en consumo de combustible y menores emisiones de CO2, lo cual es favorable desde una perspectiva ambiental. Además, implica que hay menos vehículos pesados, como SUVs o camiones, lo que contribuye positivamente a la sostenibilidad.
+
+### 3.1.3. Resúmenes numéricos
+--------Cálculo de media y mediana de emisiones--------
+```{r}
+mean_emissions <- mean(emisiones$`emissions_max_gCO2_km`, na.rm = TRUE)
+median_emissions <- median(emisiones$`emissions_max_gCO2_km`, na.rm = TRUE)
+
+mean_emissions
+median_emissions
+```
+### 3.1.4. Gráfico de cajas (Boxplot)
+
+-------- Resumen estadístico de variables relevantes -------- 
+```{r}
+resumen <- emisiones %>%
+  summarise(
+    Max_Consumption_mean = mean(`consumption_max_l_100km`, na.rm = TRUE),
+    Max_Consumption_sd = sd(`consumption_max_l_100km`, na.rm = TRUE),
+    Max_Emissions_mean = mean(`emissions_max_gCO2_km`, na.rm = TRUE),
+    Max_Emissions_sd = sd(`emissions_max_gCO2_km`, na.rm = TRUE),
+    Power_mean = mean(`power_ice_kw`, na.rm = TRUE),
+    Power_sd = sd(`power_ice_kw`, na.rm = TRUE),
+    Weight_mean = mean(`gross_vehicle_weight_rating_kg`, na.rm = TRUE),
+    Weight_sd = sd(`gross_vehicle_weight_rating_kg`, na.rm = TRUE)
+  )
+
+resumen
+```
+
+
+## 3.2. Análisis bivariante
+
+En el análisis bivariante, se estudian las relaciones entre dos variables a la vez para identificar patrones y dependencias.
+
+### 3.2.1. Tablas de contingencia
+
+Se ha creado una tabla de contingencia para explorar la relación entre las variables cualitativas 'Engine type' y 'Market segment'. Esto permitirá ver si ciertos tipos de motor están asociados a tipos específicos de vehículos, revelando lo que predomina en el mercado y cómo esto afecta a la cantidad de emisiones que se generan.
+
+
+```{r}
+tabla_contingencia <- table(emisiones$`engine_type`, emisiones$`market_segment`)
+print(tabla_contingencia)
+
+library(ggplot2)
+
+ggplot(emisiones, aes(x = `market_segment`, fill = `engine_type`)) +
+  geom_bar(position = "fill") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Segmento de mercado", y = "Proporción", fill = "Tipo de motor") +
+  ggtitle("Distribución de tipos de motor por segmento de mercado")
+
+```
+
+De esta tabla podemos sacar algunos puntos interesantes en nuestro estudio:
+
+**Distribución de vehículos eléctricos:** Los vehículos eléctricos (mayormente los eléctricos puros) están presentes en muchos segmentos, como "Berlinas-Familiares", "Todoterrenos" y "Furgonetas". También se aprecia una fuerte representación en "Camiones" y "Cuadriciclos".
+
+**Gasolina y Gasóleo:** Los motores de gasolina y gasóleo tienden a dominar segmentos que representan formas de vehículo más clásicos, como pueden ser las "Berlinas" y "Todoterrenos". Y están ausentes en aquellos reservados exclusivamente a los motores eléctricos, como son los grupos de "Motocicletas" y "Cuadriciclos".
+
+**Híbridos:** De los grupos de híbridos predominan los "Híbridos enchufables" frente a los "Híbridos de gasóleo", apareciendo estos en varios segmentos como "Berlinas", "Todoterrenos" y "Deportivos".
+
+### 3.2.2. Gráfico de dispersión
+
+Se emplean gráficos de dispersión para explorar cómo se comportan unas variables cuantitativas respecto de otras. En este caso vamos a ver la relación entre el consumo de combustible (Max Consumption l/100km) y las emisiones de CO2 (Max emissions gCO2/km), y entre el área frontal (Área frontal) y nuevamente las emisiones de CO2.
+
+```{r}
+library(ggplot2)
+ggplot(emisiones, aes(x = `consumption_max_l_100km`, y = `emissions_max_gCO2_km`)) +
+  geom_point() +
+  labs(title = "Dispersión entre Consumo Máximo y Emisiones Máximas",
+       x = "Consumo Máximo (l/100km)",
+       y = "Emisiones Máximas (gCO2/km)") +
+  theme_minimal()
+```
+
+En este gráfico se confirma la tendencia de que cuanto más consumen los vehículos, mayores son sus emisiones de CO2; si bien se pueden observar varios valores atípicos que indican que algunos vehículos modernos como los vehículos híbridos de gasolina consumen cantidades considerables de combustible pero contaminan mucho menos que la media.
+
+```{r}
+ggplot(emisiones, aes(x = `area_frontal_m2`, y = `emissions_max_gCO2_km`)) +
+  geom_point() +
+  labs(title = "Dispersión entre Área Frontal y Emisiones Máximas",
+       x = "Área Frontal (m²)",
+       y = "Emisiones Máximas (gCO2/km)") +
+  theme_minimal()
+```
+
+Por otra parte, aquí se puede ver como, en términos generales; a mayor área frontal, mayores emisiones de CO2 se generan. Sin embargo, algunos valores atípicos indican que hay grupos de vehículos pequeños que contaminan tanto como otros mucho más grandes; lo cual refleja que el tamaño puede no ser un factor tan determinante en el número de emisiones de un vehículo.
+
+### 3.2.3. Correlación y covarianza
+
+- **Correlación de Pearson**: Se calcularán coeficientes de correlación entre variables como `Power CV` y `Max emissions gCO2/km`, para ver si existe una relación lineal fuerte entre la potencia del motor y las emisiones.
+
+- **Covarianza**: La covarianza entre variables cuantitativas como `Max Consumption l/100km` y `Max emissions gCO2/km` mostrará cómo varían juntas estas variables. Una covarianza positiva indicaría que, a medida que aumenta el consumo de combustible, también aumentan las emisiones de CO2.
+
+-------Tabla de frecuencias para "Engine type"-------
+```{r}
+tabla_frecuencias_engine_type <- table(emisiones$`engine_type`)
+print(tabla_frecuencias_engine_type)
+```
+
+Número de vehículos en cada grupo de motor.\
+Las cantidades y diferencias entre ellos se verá mejor en la gráfica de tipos de motor más adelante.
+
+### 3.2.4. Gráfica de dispersión y regresión lineal
+-------Visualización de las tablas de frecuencias-------
+
+-------Gráfico de barras para el tipo de motor-------
+```{r}
+ggplot(as.data.frame(tabla_frecuencias_engine_type), aes(x = Freq, y = Var1)) +
+  geom_bar(stat = "identity", fill = COLOR_EngineType) +
+  labs(title = "Frecuencia del Tipo de Motor",
+       x = "Frecuencia",
+       y = "Tipo de Motor") +
+  theme_minimal()
+```
+
+Se muestran todos los tipos de motores de los vehículos estudiados.\
+Con ello, sabemos qué gran parte de los vehículos usan motores que usan como combustible gasóleo y gasolina.
+
+-------Gráfico de barras para el índice de eficiencia de combustible-------
+```{r}
+
+```
+
+A pesar de que muchos de los vehículos no estén clasificados, se puede encontrar una tendencia.\
+Esta se encuentra en que muchos de los vehículos se encuentran en el apartado C, D, y B. Lo cual puede implicar una similitud entre todos los vehículos de estos tres grupos.
+
+-------Gráficos de dispersión-------
+```{r}
+ggplot(emisiones, aes(x = `power_ice_kw`, y = `emissions_max_gCO2_km`)) +
+  geom_point(color = COLOR_MaxEmissions, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = COLOR_PowerIce) +
+  labs(title = "Relación entre Potencia del motor y Emisiones de CO2",
+       x = "Potencia del Motor (kw)",
+       y = "Max emissions gCO2/km") +
+  theme_minimal()
+```
+
+Se muestra la relación entre las emisiones máximas de CO₂ junto al poder del motor del vehículo.\
+Cada punto en la gráfica representa un vehículo, la posición X se relaciona con la potencia del motor de este vehículo, el cual, en caso de no estar explícitamente, se aproxima al valor más cercano encontrado en la gráfica, y con ello, se establece la posición Y estableciendo su emisión máxima, teniendo así la posición final del punto.\
+Esta gráfica revela muchos datos importantes, siendo tres puntos cruciales que:
+
+- Una minoría de los vehículos funcionan en su mayor medida en combustibles no fósiles, estos son los puntos más bajos de la gráfica, lo que a su vez muestra que, si un vehículo funciona mediante estos combustibles, la potencia de su motor no afecta a las emisiones, esto se conoce gracias a que todos estos puntos tienden a establecerse entre 20 y 80 g/km de emisiones, mientras que el nivel de la potencia del motor aumenta.\
+- La mayoría de los vehículos se establecen en un rango concreto, entre 100 y 300 g/km de emisiones, entre los 50 y 200 kW de potencia del motor, esto muestra como muchos de estos vehículos tienen algo en común a la hora de afectar a las emisiones.\
+- A medida que la potencia del motor aumenta, también lo hace las emisiones, pero es muy interesante la posición de los puntos, ya que no muestran una amplitud lineal. Se ve como los puntos menores a la línea que representa la potencia aumentan con ella, pero algo pasa con los puntos mayores a ella, no la siguen, sino que tienen un rango, parece que las emisiones máximas aumentan en su máximo (400 g/km), el cual sería el valor máximo de dicho rango, y de ahí se mantienen por debajo hasta llegar a la línea, siendo esta el valor mínimo del rango.
+
+
+-------Potencia (kw) vs Máximas emisiones de CO2-------
+```{r}
+cor_power_emissions <- cor(emisiones$`power_ice_kw`, emisiones$`emissions_max_gCO2_km`, use = "complete.obs")
+cor_power_emissions
+```
+
+Se muestra como a pesar de las grandes relaciones entre los vehiculos en la grafica anterior, las emisiones máximas de estos vehiculos tienen una baja correlación con la potencia de sus motores.
+
+
+-------Modelo de regresión lineal-------
+```{r}
+modelo <- lm(`emissions_max_gCO2_km` ~ `power_ice_kw`, data = emisiones)
+summary(modelo)
+```
+
+Existe una relación donde por cada 0.3 kW de energía se emiten un aproximado de 120 g/km de CO₂.\
+Con ello, se genera una relación de 0.145, lo cual implica que, la potencia del motor del vehículo no se relaciona directamente con las emisiones máximas.
+
+-------Peso del vehículo vs Máximas emisiones de CO2-------
+```{r}
+ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`, y = `emissions_max_gCO2_km`)) +
+  geom_point(color = COLOR_MaxEmissions, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = COLOR_Weigth) +
+  labs(title = "Relación entre Peso del Vehículo y Emisiones de CO2",
+       x = "Peso del Vehículo (kg)",
+       y = "Max emissions gCO2/km") +
+  theme_minimal()
+```
+
+Se presenta la relación entre el peso de vehículo y sus emisiones máximas.\
+Aunque parezca que no existe ninguna relación entre ambas por la distribución de los puntos, esto no podría ser cierto, debido a un pequeño comportamiento de los puntos.\
+La posición Y de los puntos parece no tener relación con el peso del vehículo que representa, pero al fijarse con más detalle, se muestra un pequeño patrón en el valor Y de los puntos, estos están alrededor de la línea representativa del peso.
+Al principio, ambos, los puntos y la línea, están en la parte inferior de la gráfica, pero al final de esta, los puntos han subido junto a la línea.\
+Esto muestra la relación que queríamos, pero el cuerpo de la gráfica también muestra otro dato importante, el cual es que, dentro del peso que tenga un vehículo, sus emisiones máximas pueden varían mucho según cada vehículo, pero siempre dentro de un rango.
+
+-------Cilindrada del motor vs Máximas emisiones de CO2-------
+```{r}
+ggplot(emisiones, aes(x = `engine_displacement_cm3`, y = `emissions_max_gCO2_km`)) +
+  geom_point(color = COLOR_MaxEmissions, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "green") +
+  labs(title = "Relación entre Cilindrada del Motor y Emisiones de CO2",
+       x = "Cilindrada del Motor (cm3)",
+       y = "Max emissions gCO2/km") +
+  theme_minimal()
+
+```
+
+Aquí se muestra la relación entre el tamaño del motor y sus emisiones máximas.\
+Se aprecia un comportamiento similar a la gráfica anterior, donde los valores altamente varían, pero dentro de un rango cercano a la línea.
+Por ende, también se entiendo de dentro de un grupo de vehículos con motores de un mismo tamaño, estos generan diferentes tipos de emisiones máximas, además de a mayor tamaño, mayor cantidad emite.
+
+
+-------Gráficos de boxplot-------\
+\
+-------Emisiones según el índice de eficiencia de combustible-------
+```{r}
+ggplot(emisiones, aes(x = `fuel_economy_index`, y = `emissions_max_gCO2_km`, fill = `fuel_economy_index`)) +
+  geom_boxplot() +
+  labs(title = "Emisiones de CO2 por Índice de Eficiencia de Combustible",
+       x = "Índice de Eficiencia",
+       y = "Max emissions gCO2/km") +
+  theme_minimal()
+```
+
+A pesar de que muchos no estén clasificados, se pueden conocer datos muy interesantes de cada uno de los grupos.\
+
+- El rango de emisiones del grupo A es extremadamente alto, teniendo el RIC más grande (ignorando los no calificados).
+- El rango B y C es el más y segundo más pequeño respectivamente, esto puede ser debido a la generalización; por las gráficas anteriores, vimos como los grupos B, C, y D eran los vehículos con el mayor tipo de motor que circula, por lo que podemos pensar que estas bajas RIC puede deberse a su gran generalización, donde a demás de su tipo de motor, más características pueden ser similares entre los vehículos, haciendo que el rango de sus emisiones sea muy pequeño.
+
+-------Emisiones según el tipo de motor-------
+```{r}
+ggplot(emisiones, aes(x = `engine_type`, y = `emissions_max_gCO2_km`, fill = `engine_type`)) +
+  geom_boxplot() +
+  labs(title = "Emisiones de CO2 por Tipo de Motor",
+       x = "Tipo de Motor",
+       y = "Max emissions gCO2/km") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Ajuste de la inclinación
+```
+
+Por lo que se aprecia, el tipo de motor parece tener poca relación con las emisiones, quitando medidas obvias, como que los coches eléctricos o similares no generan emisiones o muy pocas respectivamente, pero algo distinto pasa con los vehículos con otros motores.\
+Los vehículos con motores de combustible fósil (como gasóleo y gasolina) tienen una alta cantidad de emisiones, a la vez que tienen una alta cantidad de valores atípicos; esto puede ser por lo que dijimos anteriormente, al ser los tipos de motores más usados, muchos de los vehículos tiene características comunes entre sí, de ahí el pequeño tamaño del RIC, pero por ello, también significa que puede haber vehículos especiales con este tipo de motor, haciendo que estos consuman más o menos, en este caso, todos los vehículos que se salen del "vehículo característico" de este tipo de motores, tienen siempre una mayor cantidad de emisiones frente a los vehículos "normales" con el mismo motor.
+
+
+# **4. Tabla comparativa**
+
+# **5. Conclusiones**
+
+## 5.1 Resumen de hallazgos clave
+1. **Relación entre potencia y emisiones:** Se encontró una correlación negativa significativa entre la potencia del motor y las emisiones de CO2. Esto sugiere que a medida que aumenta la potencia, las emisiones de CO2 tienden a disminuir, lo que podría indicar que los vehículos más potentes están utilizando tecnologías más eficientes.
+  
+2. **Efecto del consumo:** Las emisiones de CO2 también mostraron una relación con el consumo de combustible, donde un menor consumo está asociado con menores emisiones. Esto destaca la importancia de la eficiencia energética en la reducción de emisiones contaminantes.
+
+3. **Zonas de estandarización:** Al estandarizar las variables, se facilitó la comparación entre diferentes métricas. Las distribuciones estandarizadas indicaron que hay una variedad de desempeño entre los vehículos en términos de emisiones y consumo.
+
+4. **Matriz de correlación:** La matriz de correlación reveló que la mayoría de las variables están interrelacionadas, lo que implica que un cambio en una variable podría afectar a las demás.
+
+## 5.2 Recomendaciones
+- **Fomentar la investigación en tecnología eficiente:** Se recomienda que los fabricantes de automóviles inviertan más en investigación y desarrollo de tecnologías que mejoren la eficiencia del combustible y reduzcan las emisiones de CO2.
+
+- **Políticas ambientales:** Los responsables de las políticas deberían considerar la implementación de incentivos para vehículos que cumplan con estándares de baja emisión, así como promover el uso de energías limpias.
+
+- **Educación del consumidor:** Los consumidores deben ser educados sobre la importancia de elegir vehículos con menor consumo de combustible y emisiones de CO2, para contribuir a un medio ambiente más saludable.
+
