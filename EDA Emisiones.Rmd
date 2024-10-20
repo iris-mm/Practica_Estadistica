@@ -40,12 +40,8 @@ Antes de comenzar el análisis, se han descartado 6 de las 26 variables que ofre
 
 ## 1.3. Nueva variable: Área frontal
 
-Una variable nueva, "Área frontal", ha sido creada a partir de las dimensiones del ancho y la altura del vehículo. Esta variable tiene como propósito analizar cómo el tamaño del vehículo influye en su resistencia aerodinámica y, por ende, en el consumo de combustible y las emisiones de CO2. Cuanto mayor sea el área frontal de un vehículo, mayor será la resistencia al viento que experimenta, lo que, a su vez, eleva el consumo de energía y las emisiones de CO2. Esta variable será clave para estudiar la relación entre las dimensiones del vehículo y sus emisiones.
-
-```  //{r}
-emisiones <- emisiones %>%
-  mutate(area_frontal_m2 = (width_mm / 1000) * (height_mm / 1000))
-```
+Una variable nueva, "Área frontal", ha sido creada a partir de las dimensiones del ancho y la altura del vehículo. Esta variable tiene como propósito analizar cómo el tamaño del vehículo influye en su resistencia aerodinámica y, por ende, en el consumo de combustible y las emisiones de CO2. Cuanto mayor sea el área frontal de un vehículo, mayor será la resistencia al viento que experimenta, lo que, a su vez, eleva el consumo de energía y las emisiones de CO2. Esta variable será clave para estudiar la relación entre las dimensiones del vehículo y sus emisiones./
+Se inicializará al comenzar el ánalisis univariante.
 
 # **2. Diccionario de los datos**
 ```{r}
@@ -123,9 +119,15 @@ Cada una de las variables cuantitativas y cualitativas se utilizará para estudi
 
 En esta parte se examina cada variable de forma individual para describir su comportamiento. Este análisis incluye gráficos y resúmenes numéricos.
 
+###Área frontal
+```{r}
+ emisiones <- emisiones %>%
+  mutate(area_frontal_m2 = (width_mm / 1000) * (height_mm / 1000))
+```
+
 ### 3.1.1. Tablas de frecuencias
 
-Se generarán tablas de frecuencias para variables cualitativas como **Engine type**, **Market segment**, y **Transmission**, para observar cómo se distribuyen estas categorías en el dataset.
+Se generarán tablas de frecuencias para las variables cualitativas **Engine type**, **Market segment**, y **Transmission**, con objeto de observar cómo se distribuyen estas categorías en el dataset.
 
 **Frecuencia de tipos de motor**
 
@@ -292,25 +294,57 @@ En el análisis bivariante, se estudian las relaciones entre dos variables a la 
 
 ### 3.2.1. Tablas de contingencia
 
-Se crearán tablas de contingencia para explorar la relación entre dos variables cualitativas, como Engine type y Market segment, lo que permitirá ver si ciertos tipos de motor están asociados a tipos específicos de vehículos.
+Se ha creado una tabla de contingencia para explorar la relación entre las variables cualitativas 'Engine type' y 'Market segment'. Esto permitirá ver si ciertos tipos de motor están asociados a tipos específicos de vehículos, revelando lo que predomina en el mercado y cómo esto afecta a la cantidad de emisiones que se generan.
 
---------Gráfico de la distribución del Índice de Eficiencia del Combustible--------
+
 ```{r}
-tabla_contingencia <- table(emisiones$`Engine type`, emisiones$`Market segment`)
+tabla_contingencia <- table(emisiones$`engine_type`, emisiones$`market_segment`)
 print(tabla_contingencia)
+
+library(ggplot2)
+
+ggplot(emisiones, aes(x = `market_segment`, fill = `engine_type`)) +
+  geom_bar(position = "fill") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Segmento de mercado", y = "Proporción", fill = "Tipo de motor") +
+  ggtitle("Distribución de tipos de motor por segmento de mercado")
+
 ```
+
+De esta tabla podemos sacar algunos puntos interesantes en nuestro estudio:
+
+**Distribución de vehículos eléctricos:** Los vehículos eléctricos (mayormente los eléctricos puros) están presentes en muchos segmentos, como "Berlinas-Familiares", "Todoterrenos" y "Furgonetas". También se aprecia una fuerte representación en "Camiones" y "Cuadriciclos".
+
+**Gasolina y Gasóleo:** Los motores de gasolina y gasóleo tienden a dominar segmentos que representan formas de vehículo más clásicos, como pueden ser las "Berlinas" y "Todoterrenos". Y están ausentes en aquellos reservados exclusivamente a los motores eléctricos, como son los grupos de "Motocicletas" y "Cuadriciclos".
+
+**Híbridos:** De los grupos de híbridos predominan los "Híbridos enchufables" frente a los "Híbridos de gasóleo", apareciendo estos en varios segmentos como "Berlinas", "Todoterrenos" y "Deportivos".
 
 ### 3.2.2. Gráfico de dispersión
 
-Se usarán gráficos de dispersión para explorar relaciones entre variables cuantitativas, como el consumo de combustible (Max Consumption l/100km) y las emisiones de CO2 (Max emissions gCO2/km), o entre el área frontal (Área frontal) y las emisiones de CO2.
+Se emplean gráficos de dispersión para explorar cómo se comportan unas variables cuantitativas respecto de otras. En este caso vamos a ver la relación entre el consumo de combustible (Max Consumption l/100km) y las emisiones de CO2 (Max emissions gCO2/km), y entre el área frontal (Área frontal) y nuevamente las emisiones de CO2.
 
--------Tabla de frecuencias para "Fuel economy index"-------
 ```{r}
-tabla_frecuencias_fuel_economy <- table(emisiones$`fuel_economy_index`)
-print(tabla_frecuencias_fuel_economy)
+library(ggplot2)
+ggplot(emisiones, aes(x = `consumption_max_l_100km`, y = `emissions_max_gCO2_km`)) +
+  geom_point() +
+  labs(title = "Dispersión entre Consumo Máximo y Emisiones Máximas",
+       x = "Consumo Máximo (l/100km)",
+       y = "Emisiones Máximas (gCO2/km)") +
+  theme_minimal()
 ```
 
+En este gráfico se confirma la tendencia de que cuanto más consumen los vehículos, mayores son sus emisiones de CO2; si bien se pueden observar varios valores atípicos que indican que algunos vehículos modernos como los vehículos híbridos de gasolina consumen cantidades considerables de combustible pero contaminan mucho menos que la media.
 
+```{r}
+ggplot(emisiones, aes(x = `area_frontal_m2`, y = `emissions_max_gCO2_km`)) +
+  geom_point() +
+  labs(title = "Dispersión entre Área Frontal y Emisiones Máximas",
+       x = "Área Frontal (m²)",
+       y = "Emisiones Máximas (gCO2/km)") +
+  theme_minimal()
+```
+
+Por otra parte, aquí se puede ver como, en términos generales; a mayor área frontal, mayores emisiones de CO2 se generan. Sin embargo, algunos valores atípicos indican que hay grupos de vehículos pequeños que contaminan tanto como otros mucho más grandes; lo cual refleja que el tamaño puede no ser un factor tan determinante en el número de emisiones de un vehículo.
 
 ### 3.2.3. Correlación y covarianza
 
@@ -345,12 +379,7 @@ Con ello, sabemos qué gran parte de los vehículos usan motores que usan como c
 
 -------Gráfico de barras para el índice de eficiencia de combustible-------
 ```{r}
-ggplot(as.data.frame(tabla_frecuencias_fuel_economy), aes(x = Var1, y = Freq)) +
-  geom_bar(stat = "identity", fill = COLOR_EconomyIndex, alpha = 0.8) +
-  labs(title = "Frecuencia del Índice de Eficiencia de Combustible",
-       x = "Índice de Eficiencia",
-       y = "Frecuencia") +
-  theme_minimal()
+
 ```
 
 A pesar de que muchos de los vehículos no estén clasificados, se puede encontrar una tendencia.\
