@@ -40,8 +40,9 @@ Antes de comenzar el análisis, se han descartado 6 de las 26 variables que ofre
 
 ## 1.3. Nueva variable: Área frontal
 
-Una variable nueva, "Área frontal", ha sido creada a partir de las dimensiones del ancho y la altura del vehículo. Esta variable tiene como propósito analizar cómo el tamaño del vehículo influye en su resistencia aerodinámica y, por ende, en el consumo de combustible y las emisiones de CO2. Cuanto mayor sea el área frontal de un vehículo, mayor será la resistencia al viento que experimenta, lo que, a su vez, eleva el consumo de energía y las emisiones de CO2. Esta variable será clave para estudiar la relación entre las dimensiones del vehículo y sus emisiones./
-Se inicializará al comenzar el ánalisis univariante.
+Una variable nueva, "Área frontal", ha sido creada a partir de las dimensiones del ancho y la altura del vehículo. Esta variable tiene como propósito analizar cómo el tamaño del vehículo influye en su resistencia aerodinámica y, por ende, en el consumo de combustible y las emisiones de CO2. Cuanto mayor sea el área frontal de un vehículo, mayor será la resistencia al viento que experimenta, lo que, a su vez, eleva el consumo de energía y las emisiones de CO2. Esta variable será clave para estudiar la relación entre las dimensiones del vehículo y sus emisiones.\
+
+Se inicializará al comenzar el ánalisis univariante por motivos de coherencia con el código.
 
 # **2. Diccionario de los datos**
 ```{r}
@@ -62,7 +63,7 @@ En esta sección se describen y clasifican las variables disponibles en el datas
 
 ### 2.1.1. Variables cuantitativas
 
-Las **variables cuantitativas** son aquellas que expresan cantidades numéricas y se dividen en dos subcategorías: **cuantitativas continuas** y **cuantitativas discretas**. Estas variables serán fundamentales en el análisis descriptivo y bivariante, así como para los estudios de correlación, regresión y covarianza.
+Las **variables cuantitativas** son aquellas que expresan cantidades numéricas y se dividen en dos subcategorías: **cuantitativas continuas** y **cuantitativas discretas**. Serán fundamentales en los estudios de correlación, regresión y covarianza.
 
 - **Variables cuantitativas continuas**: Son aquellas que pueden tomar cualquier valor dentro de un rango continuo:
 
@@ -77,16 +78,16 @@ Las **variables cuantitativas** son aquellas que expresan cantidades numéricas 
   - `Power CV`: Potencia del vehículo medida en caballos de fuerza, que nos ayuda a entender la relación entre la potencia y las emisiones.
   - `Power electric kw`: Potencia del motor eléctrico en kilovatios, para vehículos eléctricos o híbridos.
   - `Battery capacity kwh`: Capacidad de la batería en kilovatios-hora.
-  - `Area frontal (calculada)`: Producto del ancho y altura del vehículo, usada para explorar la influencia de las dimensiones en la resistencia aerodinámica y las emisiones.
+  - `Area frontal (añadida)`: Producto del ancho y altura del vehículo, usada para explorar la influencia de las dimensiones en la resistencia aerodinámica y las emisiones.
   
-- **Variables cuantitativas discretas**: Estas son variables numéricas que toman un número finito de valores, normalmente enteros.
+- **Variables cuantitativas discretas**:Aquellas que toman un número finito de valores, normalmente enteros.
   - `Engine displacement cm3`: Cilindrada del motor en centímetros cúbicos. La cilindrada suele estar relacionada con la potencia del motor y, por ende, con las emisiones.
   - `Power ice kw`: Potencia del motor de combustión interna en kilovatios.
   - `Battery range km`: Autonomía de la batería en kilómetros. Importante para estudiar la eficiencia en vehículos eléctricos.
 
 ### 2.1.2. Variables cualitativas
 
-Las **variables cualitativas** se refieren a categorías o clases y se dividen en **categóricas nominales** y **categóricas ordinales**. Estas se utilizarán principalmente en análisis univariantes (frecuencias, gráficos de barras) y bivariantes (tablas de contingencia, análisis comparativos).
+Las **variables cualitativas** se refieren a categorías o clases y se dividen en **categóricas nominales** y **categóricas ordinales**. Se utilizarán tanto en el análisis univariantes como en el bivariante.
 
 - **Variables cualitativas nominales**: Estas variables son categóricas pero no tienen un orden inherente entre sus categorías.
 
@@ -101,7 +102,7 @@ Las **variables cualitativas** se refieren a categorías o clases y se dividen e
 
 ## 2.2. Justificación del uso de las variables en el análisis
 
-Cada una de las variables cuantitativas y cualitativas se utilizará para estudiar su impacto directo o indirecto en las emisiones de CO2. Algunas de las relaciones a explorar incluyen:
+Dado que se quiere conocer la relación de las variables con los niveles de CO2, los estudios bivariantes siempre incluirán el factor de las emisiones. Las relaciones a explorar incluyen:
 
 - **Consumo y emisiones**: El consumo máximo y mínimo de combustible (`Max Consumption l/100km` y `Min consumption l/100km`) se relacionarán con las emisiones máximas y mínimas de CO2 (`Max emissions gCO2/km` y `Min emissions gCO2/km`). Esta relación es crucial para comprobar si los vehículos que consumen más combustible también emiten más CO2.
 
@@ -119,7 +120,7 @@ Cada una de las variables cuantitativas y cualitativas se utilizará para estudi
 
 En esta parte se examina cada variable de forma individual para describir su comportamiento. Este análisis incluye gráficos y resúmenes numéricos.
 
-###Área frontal
+###Estudio de la variable Área frontal
 ```{r}
  emisiones <- emisiones %>%
   mutate(area_frontal_m2 = (width_mm / 1000) * (height_mm / 1000))

@@ -1526,7 +1526,10 @@ de CO2. Cuanto mayor sea el área frontal de un vehículo, mayor será la
 resistencia al viento que experimenta, lo que, a su vez, eleva el
 consumo de energía y las emisiones de CO2. Esta variable será clave para
 estudiar la relación entre las dimensiones del vehículo y sus
-emisiones./ Se inicializará al comenzar el ánalisis univariante.</p>
+emisiones.<br />
+</p>
+<p>Se inicializará al comenzar el ánalisis univariante por motivos de
+coherencia con el código.</p>
 </div>
 </div>
 <div id="diccionario-de-los-datos" class="section level1">
@@ -1550,8 +1553,7 @@ cualitativas, y explicando cómo se usarán en el análisis.</p>
 <p>Las <strong>variables cuantitativas</strong> son aquellas que
 expresan cantidades numéricas y se dividen en dos subcategorías:
 <strong>cuantitativas continuas</strong> y <strong>cuantitativas
-discretas</strong>. Estas variables serán fundamentales en el análisis
-descriptivo y bivariante, así como para los estudios de correlación,
+discretas</strong>. Serán fundamentales en los estudios de correlación,
 regresión y covarianza.</p>
 <ul>
 <li><p><strong>Variables cuantitativas continuas</strong>: Son aquellas
@@ -1585,13 +1587,12 @@ emisiones.</li>
 kilovatios, para vehículos eléctricos o híbridos.</li>
 <li><code>Battery capacity kwh</code>: Capacidad de la batería en
 kilovatios-hora.</li>
-<li><code>Area frontal (calculada)</code>: Producto del ancho y altura
-del vehículo, usada para explorar la influencia de las dimensiones en la
+<li><code>Area frontal (añadida)</code>: Producto del ancho y altura del
+vehículo, usada para explorar la influencia de las dimensiones en la
 resistencia aerodinámica y las emisiones.</li>
 </ul></li>
-<li><p><strong>Variables cuantitativas discretas</strong>: Estas son
-variables numéricas que toman un número finito de valores, normalmente
-enteros.</p>
+<li><p><strong>Variables cuantitativas discretas</strong>:Aquellas que
+toman un número finito de valores, normalmente enteros.</p>
 <ul>
 <li><code>Engine displacement cm3</code>: Cilindrada del motor en
 centímetros cúbicos. La cilindrada suele estar relacionada con la
@@ -1608,10 +1609,8 @@ eléctricos.</li>
 <h3>2.1.2. Variables cualitativas</h3>
 <p>Las <strong>variables cualitativas</strong> se refieren a categorías
 o clases y se dividen en <strong>categóricas nominales</strong> y
-<strong>categóricas ordinales</strong>. Estas se utilizarán
-principalmente en análisis univariantes (frecuencias, gráficos de
-barras) y bivariantes (tablas de contingencia, análisis
-comparativos).</p>
+<strong>categóricas ordinales</strong>. Se utilizarán tanto en el
+análisis univariantes como en el bivariante.</p>
 <ul>
 <li><p><strong>Variables cualitativas nominales</strong>: Estas
 variables son categóricas pero no tienen un orden inherente entre sus
@@ -1642,9 +1641,9 @@ tiene un impacto en el consumo o las emisiones.</li>
 </div>
 <div id="justificación-del-uso-de-las-variables-en-el-análisis" class="section level2">
 <h2>2.2. Justificación del uso de las variables en el análisis</h2>
-<p>Cada una de las variables cuantitativas y cualitativas se utilizará
-para estudiar su impacto directo o indirecto en las emisiones de CO2.
-Algunas de las relaciones a explorar incluyen:</p>
+<p>Dado que se quiere conocer la relación de las variables con los
+niveles de CO2, los estudios bivariantes siempre incluirán el factor de
+las emisiones. Las relaciones a explorar incluyen:</p>
 <ul>
 <li><p><strong>Consumo y emisiones</strong>: El consumo máximo y mínimo
 de combustible (<code>Max Consumption l/100km</code> y
@@ -1682,7 +1681,7 @@ ciertos segmentos tienen más emisiones de CO2 que otros.</p></li>
 <p>En esta parte se examina cada variable de forma individual para
 describir su comportamiento. Este análisis incluye gráficos y resúmenes
 numéricos.</p>
-<p>###Área frontal</p>
+<p>###Estudio de la variable Área frontal</p>
 <pre class="r"><code> emisiones &lt;- emisiones %&gt;%
   mutate(area_frontal_m2 = (width_mm / 1000) * (height_mm / 1000))</code></pre>
 <div id="tablas-de-frecuencias" class="section level3">
