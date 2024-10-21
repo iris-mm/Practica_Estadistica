@@ -385,9 +385,6 @@ cov(emisiones$power_cv, emisiones$emissions_max_gCO2_km, use = "complete.obs")
 ```
 
 ### 3.2.4. Gráfica de dispersión y regresión lineal
-A pesar de que muchos de los vehículos no estén clasificados, se puede encontrar una tendencia.\
-Esta se encuentra en que muchos de los vehículos se encuentran en el apartado C, D, y B. Lo cual puede implicar una similitud entre todos los vehículos de estos tres grupos.
-
 -------Gráficos de dispersión-------
 ```{r}
 ggplot(emisiones, aes(x = `power_ice_kw`, y = `emissions_max_gCO2_km`)) +

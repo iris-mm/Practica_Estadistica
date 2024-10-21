@@ -2238,11 +2238,6 @@ un mayor consumo implica una mayor emisión de CO2.</p>
 </div>
 <div id="gráfica-de-dispersión-y-regresión-lineal" class="section level3">
 <h3>3.2.4. Gráfica de dispersión y regresión lineal</h3>
-<p>A pesar de que muchos de los vehículos no estén clasificados, se
-puede encontrar una tendencia.<br />
-Esta se encuentra en que muchos de los vehículos se encuentran en el
-apartado C, D, y B. Lo cual puede implicar una similitud entre todos los
-vehículos de estos tres grupos.</p>
 <p>——-Gráficos de dispersión——-</p>
 <pre class="r"><code>ggplot(emisiones, aes(x = `power_ice_kw`, y = `emissions_max_gCO2_km`)) +
   geom_point(color = COLOR_MaxEmissions, size = 2) +
