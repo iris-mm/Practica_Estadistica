@@ -268,24 +268,101 @@ median_emissions <- median(emisiones$`emissions_max_gCO2_km`, na.rm = TRUE)
 mean_emissions
 median_emissions
 ```
+
+
+### 3.1.3. Resúmenes numéricos
+Vamos a proceder a calcular los valores de la media y la mediana de las siguientes variables:
+
+  - *La media* representa el promedio de los valores de una cierta columna, conocer este valor nos hace más fácil hacernos una idea de cuanta emision hay aproximadamente por cada kilómetro.
+  
+  - *La mediana* Es el valor que se encuentra en medio del conjunto de datos de la columna. Nos ayuda a detectar valores atípicos (valores que se salen de los normal).
+  
+  - *Mínimo y máximo* El valor mínimo y máximo que toma la variable.
+  
+  - *Primer y Tercer Quantil* En el primer cuantil encontraremos el valor que se encuentra justo en el 25%, mientras que en el tercero será el valor encontrado en el 75%.
+  
+Teniendo en cuenta esto, estos son los valores calculados:
+
+*Resumen datos de consumición mínima de litros por 100km*
+```{r}
+summary(emisiones$`consumption_max_l_100km`)
+```
+
+*Resumen datos de emisión máxima de CO2 por kilómetro*
+```{r}
+summary(emisiones$`emissions_max_gCO2_km`)
+```
+
+*Resumen datos de sonsumición mínima de litros por 100km*
+```{r}
+summary(emisiones$`consumption_min_l_100km`)
+```
+
+*Resumen datos de emisión mínima de CO2 por kilómetro*
+```{r}
+summary(emisiones$`emissions_min_gCO2_km`)
+```
+
+*Resumen datos de peso de los vehículos en kilogramos*
+```{r}
+summary(emisiones$`gross_vehicle_weight_rating_kg`)
+```
+
+*Resumen datos de potencia de los vehículos*
+```{r}
+summary(emisiones$`power_cv`)
+```
+
+Ahora ya podemos tener una visión mucho más clara de los valores sin necesidad de consultar de nuevo las estadísticas.
+
 ### 3.1.4. Gráfico de cajas (Boxplot)
 
--------- Resumen estadístico de variables relevantes -------- 
-```{r}
-resumen <- emisiones %>%
-  summarise(
-    Max_Consumption_mean = mean(`consumption_max_l_100km`, na.rm = TRUE),
-    Max_Consumption_sd = sd(`consumption_max_l_100km`, na.rm = TRUE),
-    Max_Emissions_mean = mean(`emissions_max_gCO2_km`, na.rm = TRUE),
-    Max_Emissions_sd = sd(`emissions_max_gCO2_km`, na.rm = TRUE),
-    Power_mean = mean(`power_ice_kw`, na.rm = TRUE),
-    Power_sd = sd(`power_ice_kw`, na.rm = TRUE),
-    Weight_mean = mean(`gross_vehicle_weight_rating_kg`, na.rm = TRUE),
-    Weight_sd = sd(`gross_vehicle_weight_rating_kg`, na.rm = TRUE)
-  )
+Utilizaremos los graficos Boxplot para visualizar la distribucion de los datos cuantitativos dentro de los quartiles, ademas de representar la mediana y encontrar valores atípicos.
 
-resumen
+realizaremos gráficos de cajas para los siguientes datos:
+
+  - *Emisiones máximas de CO2*
+  
+  - *Consumo máximo de combustible*
+  
+  - *Peso bruto del vehículo*
+  
+  
+*Boxplot para las emisiones máximas de CO2*
+
+Este grafíco representara una representación de la mediana, rango entre cuartiles y valores atípicos de los datos de emisión.
+```{r}
+ggplot(emisiones, aes(x = "", y = `emissions_max_gCO2_km`)) +
+  geom_boxplot(fill = "lightblue", outlier.colour = "red") +
+  labs(title = "Boxplot de Emisiones Máximas de CO2", y = "Emisiones (gCO2/km)") +
+  theme_minimal() +
+  coord_flip()
 ```
+
+*Boxplot para el consumo máximo de combustible*
+
+Este grafíco representara una representación de la mediana, rango entre cuartiles y valores atípicos de los datos de consumo.
+```{r}
+ggplot(emisiones, aes(x = "", y = `consumption_max_l_100km`)) +
+  geom_boxplot(fill = "lightgreen", outlier.colour = "red") +
+  labs(title = "Boxplot de Consumo Máximo de Combustible", y = "Consumo (l/100km)") +
+  theme_minimal() +
+  coord_flip()
+```
+
+
+*Boxplot para el peso bruto del vehículo*
+
+Este grafíco representara una representación de la mediana, rango entre cuartiles y valores atípicos del peso del vehículo.
+```{r}
+ggplot(emisiones, aes(x = "", y = `gross_vehicle_weight_rating_kg`)) +
+  geom_boxplot(fill = "lightcoral", outlier.colour = "red") +
+  labs(title = "Boxplot de Peso Bruto del Vehículo", y = "Peso Bruto (kg)") +
+  theme_minimal() +
+  coord_flip()
+```
+
+Gracias a estos grafícos, podemos visualizar más claramente los datos del apartado anterior en forma de gráfico.
 
 
 ## 3.2. Análisis bivariante
