@@ -589,10 +589,66 @@ Los vehículos con motores de combustible fósil (como gasóleo y gasolina) tien
 
 # **4. Tabla comparativa**
 
-```{r}
+Utilizamos tablas comparativas para visualizar de una forma más directa la información del dataset.\
+En este caso se han seleccionado las variables Tipo de vehículo, Transmisión y Cilindrada para ser estudiadas junto con Emisiones y Consumo, con el objetivo de visualizar qué tipos de vehículos contaminan más y cómo su tipo de transmisión y cilindrada son factores clave en el mismo ámbito.\
+Para el cálculo de las tablas emplearemos los valores medios de cada variable cuantitativa, ya que si usasemos todos quedarían tablas demasiado grandes, y estas perderían su función de resumir la información.
 
+**Tipos de vehículo vs Variables de rendimiento**
+
+```{r}
+tabla_comparativa <- emisiones %>%
+  group_by(market_segment) %>%
+  summarise(
+    Consumo_Medio = mean(consumption_max_l_100km, na.rm = TRUE),
+    Emisiones_Medias = mean(emissions_max_gCO2_km, na.rm = TRUE),
+    Cilindrada_Media = mean(engine_displacement_cm3, na.rm = TRUE),
+    .groups = 'drop')
+
+kable(tabla_comparativa, 
+      col.names = c("Segmento de Mercado", "Consumo Medio (l/100km)", "Emisiones Medias (g CO₂/km)", "Cilindrada Media (cm³)"),
+      caption = "")
 
 ```
+
+Con esta tabla podemos concluir que la mayoría de vehículos grandes (Camión, Furgón, Chasis-Cabina Grande) tienden a contaminar más que los pequeños ya que poseen valores mayores para el consumo de combustible y las emisiones. Esto confirma nuestros estudios previos relacionados con el área frontal y las emisiones máximas de los vehículos.
+
+**Transmisión vs Consumo y Emisiones**
+
+```{r}
+tabla_comparativa1 <- emisiones %>%
+  group_by(transmission) %>%
+  summarise(
+    Consumo_Medio = mean(consumption_max_l_100km, na.rm = TRUE),
+    Emisiones_Medias = mean(emissions_max_gCO2_km, na.rm = TRUE),
+    .groups = 'drop')
+
+kable(tabla_comparativa1, 
+      col.names = c("Transmisión", "Consumo Medio (l/100km)", "Emisiones Medias (g CO₂/km)"),
+      caption = "")
+```
+
+En esta tabla visualizamos fácilmente como los vehículos de transmisión semiautomática (SC) consumen la mayor cantidad de combustible de todas las categorías y sin embargo, son los que tienen transmisión automática (A) o manual (M) los que emiten más CO2. Esto sugiere que los coches más modernos como pueden ser los automáticos han conseguido un mejor ahorro del combustible pero no rebajar la cantidad de emisiones al medio; mientras que los semiautomáticos son menos sostenibles puesto que consumen grandes cantidades de combustible pese a emitir menos CO2.
+
+**Cilindrada vs Consumo y Emisiones**
+
+```{r}
+tabla_comparativa2 <- emisiones %>%
+  mutate(Cilindrada_Intervalos = cut(engine_displacement_cm3, 
+                                     breaks = c(0, 1000, 2000, 3500, 6000, 8500, Inf),
+                                     labels = c("Hasta 1000 cm³", "1000-2000 cm³", "2000-3500 cm³", "3500-6000 cm³", "6000-8500 cm³", "Más de 8500 cm³"))) %>%
+  group_by(Cilindrada_Intervalos) %>%
+  summarise(
+    Consumo_Medio = mean(consumption_max_l_100km, na.rm = TRUE),
+    Emisiones_Medias = mean(emissions_max_gCO2_km, na.rm = TRUE),
+    .groups = 'drop')
+
+kable(tabla_comparativa2, 
+      col.names = c("Cilindrada del motor (Intervalos)", "Consumo Medio (l/100km)", "Emisiones Medias (g CO₂/km)"),
+      caption = "")
+```
+
+Con la tabla se nos confirma que existe una relación directamente proporcional entre el tamaño de la cilindrada y el consumo y emisiones del vehículo, de forma que a mayor cilindrada, mayores son los otros dos valores.\
+Atendiendo a los números, los rangos de emisiones y consumo más altos se encuentran entre los 3000 y 8500 cm3, que revisando el dataset se corresponden con Camiones, Berlinas-familiares y Deportivos entre otros.
 
 # **5. Conclusiones**
 
