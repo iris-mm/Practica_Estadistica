@@ -30,13 +30,14 @@ El objetivo de esta investigación es determinar la forma en que algunas caracte
 Para ello nos basamos en datos recogidos en España a lo largo de 2022.
 
 ## 1.2. Variables excluidas
-Antes de comenzar el análisis, se han descartado 6 de las 26 variables que ofrece el dataset, ya que no se consideran relevantes para el estudio o contienen una muestra de datos demasiado pequeña. Las variables excluidas son las siguientes:
+Antes de comenzar el análisis, se han descartado 11 de las 26 variables que ofrece el dataset, ya que no se consideran relevantes para el estudio o contienen una muestra de datos demasiado pequeña. Las variables excluidas y los motivos de esto son:
 
 - **ID**: Es un identificador que no aporta valor al análisis de emisiones.
 - **Total seating**: Se cubre mediante otras variables que ya proporcionan suficiente información acerca de las dimensiones del vehículo.
-- **CO2/km emissions in WLTP** y **Consumption l/100km in WLTP**: Estas variables han sido descartadas ya que el dataset ofrece otras similares que resultan más útiles para el estudio (como el consumo máximo y mínimo de combustible y las emisiones de CO2).
-- **Type hybrid**: Esta variable ha sido excluida debido a la falta de suficientes datos para que sea relevante en el análisis.
-
+- **CO2/km emissions in WLTP** y **Consumption l/100km in WLTP**: Fueron descartadas ya que el dataset ofrece otras similares que resultan más útiles para el estudio (como el consumo máximo y mínimo de combustible y las emisiones de CO2).
+- **Type hybrid**: Excluida debido a la falta de suficientes datos para que sea relevante en el análisis.
+- **Make** y **Model**: Indica el fabricante del vehiculo y su modelo, lo cual es completamente irrelevante.
+- **Electric Consumption (kwh/100km), Power Electric (kw), Battery Capacity (kwh), Battery Range (km)**: Todos estos datos están relacionados con los coches eléctricos e híbridos, los cuales, debido a su poca relevancia, tienen muy poco peso en el estudio, aunque se nombren en varias partes de este al estos ser visibles por sus diferencias con los vehículos de combustibles fósiles.
 
 ## 1.3. Nueva variable: Área frontal
 
