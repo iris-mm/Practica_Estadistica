@@ -21,12 +21,18 @@ COLOR_EconomyIndex = "lightblue"
 COLOR_PowerIce = "red"
 COLOR_Weigth = "purple"
 ```
+- **Iris Muñoz Montero**
+- **Ángel Younes Karim Mérida**
+- **Carla Calvache Amador**
+- **Rubén Pedroso Praena**
+- **Miguel García Figueroa**
 
 # **1. Introducción y definición de objetos **
 
 ## 1.1 Objetivo de la investigación
 
-El objetivo de esta investigación es determinar la forma en que algunas características de distintos vehículos como son su tamaño, peso o potencia de motor; influyen en las emisiones que liberan al medioambiente.\
+El objetivo de esta investigación es determinar la forma en que algunas características de distintos vehículos como son su tamaño, peso o potencia de motor, influyen en las emisiones que liberan al medioambiente.\
+
 Para ello nos basamos en datos recogidos en España a lo largo de 2022.
 
 ## 1.2. Variables excluidas
@@ -580,7 +586,7 @@ Los vehículos con motores de combustible fósil (como gasóleo y gasolina) tien
 
 Utilizamos tablas comparativas para visualizar de una forma más directa la información del dataset.\
 En este caso se han seleccionado las variables Tipo de vehículo, Transmisión y Cilindrada para ser estudiadas junto con Emisiones y Consumo, con el objetivo de visualizar qué tipos de vehículos contaminan más y cómo su tipo de transmisión y cilindrada son factores clave en el mismo ámbito.\
-Para el cálculo de las tablas emplearemos los valores medios de cada variable cuantitativa, ya que si usasemos todos quedarían tablas demasiado grandes, y estas perderían su función de resumir la información.
+Para el cálculo de las tablas emplearemos los valores medios de cada variable cuantitativa, ya que si usasemos todos los del dataset quedarían tablas demasiado grandes y estas perderían su función de resumir la información.
 
 **Tipos de vehículo vs Variables de rendimiento**
 

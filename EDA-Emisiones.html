@@ -1483,6 +1483,17 @@ border-radius: 0px;
 </div>
 
 
+<ul>
+<li><strong>Iris Muñoz Montero</strong></li>
+<li><strong>Ángel Younes Karim Mérida</strong><br />
+</li>
+<li><strong>Carla Calvache Amador</strong><br />
+</li>
+<li><strong>Rubén Pedroso Praena</strong><br />
+</li>
+<li><strong>Miguel García Figueroa</strong><br />
+</li>
+</ul>
 <div id="introducción-y-definición-de-objetos" class="section level1">
 <h1><strong>1. Introducción y definición de objetos </strong></h1>
 <div id="objetivo-de-la-investigación" class="section level2">
@@ -2484,9 +2495,9 @@ Consumo, con el objetivo de visualizar qué tipos de vehículos contaminan
 más y cómo su tipo de transmisión y cilindrada son factores clave en el
 mismo ámbito.<br />
 Para el cálculo de las tablas emplearemos los valores medios de cada
-variable cuantitativa, ya que si usasemos todos quedarían tablas
-demasiado grandes, y estas perderían su función de resumir la
-información.</p>
+variable cuantitativa, ya que si usasemos todos los del dataset
+quedarían tablas demasiado grandes y estas perderían su función de
+resumir la información.</p>
 <p><strong>Tipos de vehículo vs Variables de rendimiento</strong></p>
 <pre class="r"><code>tabla_comparativa &lt;- emisiones %&gt;%
   group_by(market_segment) %&gt;%
@@ -2791,8 +2802,10 @@ kable(tabla_comparativa2,
 proporcional entre el tamaño de la cilindrada y el consumo y emisiones
 del vehículo, de forma que a mayor cilindrada, mayores son los otros dos
 valores.<br />
-Atendiendo a los valores, los rangos de emisiones y consumo más altos se
-encuentran entre los 3000 y 8500</p>
+Atendiendo a los números, los rangos de emisiones y consumo más altos se
+encuentran entre los 3000 y 8500 cm3, que revisando el dataset se
+corresponden con Camiones, Berlinas-familiares y Deportivos entre
+otros.</p>
 </div>
 <div id="conclusiones" class="section level1">
 <h1><strong>5. Conclusiones</strong></h1>
