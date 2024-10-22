@@ -82,7 +82,7 @@ emisiones <- readxl::read_excel("idae_emissions.xlsx")
   **Variables cualitativas ordinales**\
   - `Transmission`: Tipo de transmisión (Manual, Semiautomática, Automática).\
 
-## 2.2. Justificación del uso de las variables en el análisis
+## 3.1. Justificación del uso de las variables en el análisis
 
 Cada una de las variables cuantitativas y cualitativas se utilizará para estudiar su impacto directo o indirecto en las emisiones de CO2. Algunas de las relaciones a explorar incluyen:
 
@@ -235,7 +235,7 @@ Se analiza la distribución del peso en kilogramos de los vehículos en el datas
 
 ```{r}
 ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`)) +
-  geom_histogram(binwidth = 100, fill = COLOR_Weigth, color = "black", alpha = 0.7) +
+  geom_histogram(binwidth = 100, fill = COLOR_Weigth, color = COLOR_Weigth, alpha = 0.7) +
   labs(title = "Distribución del Peso Bruto del Vehículo", x = "Peso Bruto (kg)", y = "Frecuencia") +
   theme_minimal()
 ```
@@ -320,7 +320,7 @@ realizaremos gráficos de cajas para los siguientes datos:
 Este grafíco representara una representación de la mediana, rango entre cuartiles y valores atípicos de los datos de emisión.
 ```{r}
 ggplot(emisiones, aes(x = "", y = `emissions_max_gCO2_km`)) +
-  geom_boxplot(fill = "lightblue", outlier.colour = "red") +
+  geom_boxplot(fill = COLOR_MaxEmissions, outlier.colour = "black") +
   labs(title = "Boxplot de Emisiones Máximas de CO2", y = "Emisiones (gCO2/km)") +
   theme_minimal() +
   coord_flip()
@@ -331,7 +331,7 @@ ggplot(emisiones, aes(x = "", y = `emissions_max_gCO2_km`)) +
 Este grafíco representara una representación de la mediana, rango entre cuartiles y valores atípicos de los datos de consumo.
 ```{r}
 ggplot(emisiones, aes(x = "", y = `consumption_max_l_100km`)) +
-  geom_boxplot(fill = "lightgreen", outlier.colour = "red") +
+  geom_boxplot(fill = COLOR_Consumption, outlier.colour = "black") +
   labs(title = "Boxplot de Consumo Máximo de Combustible", y = "Consumo (l/100km)") +
   theme_minimal() +
   coord_flip()
@@ -343,7 +343,7 @@ ggplot(emisiones, aes(x = "", y = `consumption_max_l_100km`)) +
 Este gráfico representara una representación de la mediana, rango entre cuartiles y valores atípicos del peso del vehículo.
 ```{r}
 ggplot(emisiones, aes(x = "", y = `gross_vehicle_weight_rating_kg`)) +
-  geom_boxplot(fill = "lightcoral", outlier.colour = "red") +
+  geom_boxplot(fill = COLOR_Weigth, outlier.colour = "black") +
   labs(title = "Boxplot de Peso Bruto del Vehículo", y = "Peso Bruto (kg)") +
   theme_minimal() +
   coord_flip()
@@ -390,7 +390,7 @@ Se emplean gráficos de dispersión para explorar cómo se comportan unas variab
 ```{r}
 library(ggplot2)
 ggplot(emisiones, aes(x = `consumption_max_l_100km`, y = `emissions_max_gCO2_km`)) +
-  geom_point() +
+  geom_point(color = COLOR_MaxEmissions) +
   labs(title = "Dispersión entre Consumo Máximo y Emisiones Máximas",
        x = "Consumo Máximo (l/100km)",
        y = "Emisiones Máximas (gCO2/km)") +
@@ -401,7 +401,7 @@ En este gráfico se confirma la tendencia de que cuanto más consumen los vehíc
 
 ```{r}
 ggplot(emisiones, aes(x = `area_frontal_m2`, y = `emissions_max_gCO2_km`)) +
-  geom_point() +
+  geom_point(color = COLOR_MaxEmissions) +
   labs(title = "Dispersión entre Área Frontal y Emisiones Máximas",
        x = "Área Frontal (m²)",
        y = "Emisiones Máximas (gCO2/km)") +
