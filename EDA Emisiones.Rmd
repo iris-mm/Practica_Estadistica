@@ -353,7 +353,7 @@ ggplot(emisiones, aes(x = "", y = `consumption_max_l_100km`)) +
 
 *Boxplot para el peso bruto del vehículo*
 
-Este grafíco representara una representación de la mediana, rango entre cuartiles y valores atípicos del peso del vehículo.
+Este gráfico representara una representación de la mediana, rango entre cuartiles y valores atípicos del peso del vehículo.
 ```{r}
 ggplot(emisiones, aes(x = "", y = `gross_vehicle_weight_rating_kg`)) +
   geom_boxplot(fill = "lightcoral", outlier.colour = "red") +
