@@ -30,7 +30,7 @@ El objetivo de esta investigación es determinar la forma en que algunas caracte
 Para ello nos basamos en datos recogidos en España a lo largo de 2022.
 
 ## 1.2. Variables excluidas
-Antes de comenzar el análisis, se han descartado 6 de las 26 variables que ofrece el dataset, ya que no se consideran relevantes para el estudio o contienen una muestra de datos demasiado pequeña. Las variables excluidas son las siguientes:
+Antes de comenzar el análisis, se han descartado 8 de las 26 variables que ofrece el dataset, ya que no se consideran relevantes para el estudio o contienen una muestra de datos demasiado pequeña. Las variables excluidas son las siguientes:
 
 - **ID**: Es un identificador que no aporta valor al análisis de emisiones.
 - **Total seating**: Se cubre mediante otras variables que ya proporcionan suficiente información acerca de las dimensiones del vehículo.
@@ -119,7 +119,7 @@ Cada una de las variables cuantitativas y cualitativas se utilizará para estudi
 
 En esta parte se examina cada variable de forma individual para describir su comportamiento. Este análisis incluye gráficos y resúmenes numéricos.
 
-###Área frontal
+### Cálculo de la variable Área frontal
 ```{r}
  emisiones <- emisiones %>%
   mutate(area_frontal_m2 = (width_mm / 1000) * (height_mm / 1000))
@@ -259,18 +259,22 @@ ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`)) +
 
 La concentración de la mayoría de los vehículos en el lado izquierdo del histograma indica que el dataset está compuesto en gran parte por vehículos más ligeros. Esto sugiere una tendencia hacia modelos más eficientes en consumo de combustible y menores emisiones de CO2, lo cual es favorable desde una perspectiva ambiental. Además, implica que hay menos vehículos pesados, como SUVs o camiones, lo que contribuye positivamente a la sostenibilidad.
 
-### 3.1.3. Resúmenes numéricos
---------Cálculo de media y mediana de emisiones--------
-```{r}
-mean_emissions <- mean(emisiones$`emissions_max_gCO2_km`, na.rm = TRUE)
-median_emissions <- median(emisiones$`emissions_max_gCO2_km`, na.rm = TRUE)
+**Histograma: Peso bruto del vehículo (kg)**
 
-mean_emissions
-median_emissions
+```{r}
+ggplot(emisiones, aes(x = `fuel_economy_index`)) +
+  geom_bar(fill = COLOR_EconomyIndex) +
+  labs(title = "Distribución del Índice de Eficiencia del Combustible",
+       x = "Índice de Eficiencia",
+       y = "Frecuencia") +
+  theme_minimal()
 ```
 
+A pesar de que muchos de los vehículos no estén clasificados, se puede encontrar una tendencia.
+Esta se encuentra en que muchos de los vehículos se encuentran en el apartado C, D, y B. Lo cual puede implicar una similitud entre todos los vehículos de estos tres grupos.
 
 ### 3.1.3. Resúmenes numéricos
+ 
 Vamos a proceder a calcular los valores de la media y la mediana de las siguientes variables:
 
   - *La media* representa el promedio de los valores de una cierta columna, conocer este valor nos hace más fácil hacernos una idea de cuanta emision hay aproximadamente por cada kilómetro.
