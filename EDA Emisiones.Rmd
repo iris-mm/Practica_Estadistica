@@ -410,6 +410,16 @@ ggplot(emisiones, aes(x = `area_frontal_m2`, y = `emissions_max_gCO2_km`)) +
 
 Por otra parte, aquí se puede ver como, en términos generales; a mayor área frontal, mayores emisiones de CO2 se generan. Sin embargo, algunos valores atípicos indican que hay grupos de vehículos pequeños que contaminan tanto como otros mucho más grandes; lo cual refleja que el tamaño puede no ser un factor tan determinante en el número de emisiones de un vehículo.
 
+```{r}
+library(ggplot2)
+ggplot(emisiones, aes(x = `area_frontal_m2`, y = `consumption_max_l_100km`)) +
+  geom_point(color = COLOR_Consumption) +
+  labs(title = "Relación entre el Area Frontal y el Consumo Máximo",
+       x = "Area Frontal (m2)",
+       y = "Consumo Máximo (gCO2/km)") +
+  theme_minimal()
+```
+
 ### 3.2.3. Correlación y covarianza
 
 En esta parte se analizarán las relaciones entre pares de variables cuantitativas mediante el cálculo de coeficientes de correlación y covarianza. Estos indicadores permitirán entender la fuerza y dirección de la relación entre dos variables.
