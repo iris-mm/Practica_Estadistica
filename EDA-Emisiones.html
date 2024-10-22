@@ -2476,6 +2476,323 @@ mismo motor.</p>
 </div>
 <div id="tabla-comparativa" class="section level1">
 <h1><strong>4. Tabla comparativa</strong></h1>
+<p>Utilizamos tablas comparativas para visualizar de una forma más
+directa la información del dataset.<br />
+En este caso se han seleccionado las variables Tipo de vehículo,
+Transmisión y Cilindrada para ser estudiadas junto con Emisiones y
+Consumo, con el objetivo de visualizar qué tipos de vehículos contaminan
+más y cómo su tipo de transmisión y cilindrada son factores clave en el
+mismo ámbito.<br />
+Para el cálculo de las tablas emplearemos los valores medios de cada
+variable cuantitativa, ya que si usasemos todos quedarían tablas
+demasiado grandes, y estas perderían su función de resumir la
+información.</p>
+<p><strong>Tipos de vehículo vs Variables de rendimiento</strong></p>
+<pre class="r"><code>tabla_comparativa &lt;- emisiones %&gt;%
+  group_by(market_segment) %&gt;%
+  summarise(
+    Consumo_Medio = mean(consumption_max_l_100km, na.rm = TRUE),
+    Emisiones_Medias = mean(emissions_max_gCO2_km, na.rm = TRUE),
+    Cilindrada_Media = mean(engine_displacement_cm3, na.rm = TRUE),
+    .groups = &#39;drop&#39;)
+
+kable(tabla_comparativa, 
+      col.names = c(&quot;Segmento de Mercado&quot;, &quot;Consumo Medio (l/100km)&quot;, &quot;Emisiones Medias (g CO₂/km)&quot;, &quot;Cilindrada Media (cm³)&quot;),
+      caption = &quot;&quot;)</code></pre>
+<table>
+<colgroup>
+<col width="27%" />
+<col width="23%" />
+<col width="27%" />
+<col width="22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Segmento de Mercado</th>
+<th align="right">Consumo Medio (l/100km)</th>
+<th align="right">Emisiones Medias (g CO₂/km)</th>
+<th align="right">Cilindrada Media (cm³)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Autobús/Autocar Articulado</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">4017.263158</td>
+</tr>
+<tr class="even">
+<td align="left">Autobús/Autocar Rígido</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">4513.483871</td>
+</tr>
+<tr class="odd">
+<td align="left">Berlinas-Familiares Grandes</td>
+<td align="right">6.296695</td>
+<td align="right">145.1002</td>
+<td align="right">1884.689427</td>
+</tr>
+<tr class="even">
+<td align="left">Berlinas-Familiares Medios</td>
+<td align="right">5.660154</td>
+<td align="right">133.8349</td>
+<td align="right">1501.172998</td>
+</tr>
+<tr class="odd">
+<td align="left">Camión</td>
+<td align="right">14.800000</td>
+<td align="right">387.0000</td>
+<td align="right">7709.437555</td>
+</tr>
+<tr class="even">
+<td align="left">Chasis-Cabina Grande</td>
+<td align="right">12.195652</td>
+<td align="right">319.6130</td>
+<td align="right">1509.712766</td>
+</tr>
+<tr class="odd">
+<td align="left">Chasis-Cabina Pequeño</td>
+<td align="right">11.050000</td>
+<td align="right">288.4667</td>
+<td align="right">64.408602</td>
+</tr>
+<tr class="even">
+<td align="left">Cuadriciclo de Mercancías</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">0.000000</td>
+</tr>
+<tr class="odd">
+<td align="left">Cuadriciclo de Pasajeros</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">1.020833</td>
+</tr>
+<tr class="even">
+<td align="left">Deportivo</td>
+<td align="right">9.692244</td>
+<td align="right">220.5269</td>
+<td align="right">2620.818182</td>
+</tr>
+<tr class="odd">
+<td align="left">Furgoneta Grande</td>
+<td align="right">8.797717</td>
+<td align="right">229.9396</td>
+<td align="right">1838.222760</td>
+</tr>
+<tr class="even">
+<td align="left">Furgoneta Pequeña</td>
+<td align="right">6.362101</td>
+<td align="right">159.8161</td>
+<td align="right">866.322194</td>
+</tr>
+<tr class="odd">
+<td align="left">Furgón</td>
+<td align="right">9.822059</td>
+<td align="right">239.6735</td>
+<td align="right">1642.446602</td>
+</tr>
+<tr class="even">
+<td align="left">Lujo</td>
+<td align="right">9.688210</td>
+<td align="right">220.2271</td>
+<td align="right">2871.502008</td>
+</tr>
+<tr class="odd">
+<td align="left">Minis</td>
+<td align="right">6.130612</td>
+<td align="right">136.9170</td>
+<td align="right">811.659899</td>
+</tr>
+<tr class="even">
+<td align="left">Monovol. Grande</td>
+<td align="right">7.383658</td>
+<td align="right">188.2586</td>
+<td align="right">1669.675958</td>
+</tr>
+<tr class="odd">
+<td align="left">Monovol. Medio</td>
+<td align="right">6.518552</td>
+<td align="right">162.0570</td>
+<td align="right">1372.325444</td>
+</tr>
+<tr class="even">
+<td align="left">Motocicleta</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">15.593301</td>
+</tr>
+<tr class="odd">
+<td align="left">Pequeños</td>
+<td align="right">5.665892</td>
+<td align="right">131.9148</td>
+<td align="right">1134.255294</td>
+</tr>
+<tr class="even">
+<td align="left">Todoterreno Grande</td>
+<td align="right">7.754949</td>
+<td align="right">177.6222</td>
+<td align="right">1977.109060</td>
+</tr>
+<tr class="odd">
+<td align="left">Todoterreno Medio</td>
+<td align="right">6.558460</td>
+<td align="right">146.7528</td>
+<td align="right">1625.921243</td>
+</tr>
+<tr class="even">
+<td align="left">Todoterreno Pequeño</td>
+<td align="right">6.227221</td>
+<td align="right">146.4287</td>
+<td align="right">1445.320248</td>
+</tr>
+<tr class="odd">
+<td align="left">Tractocamión</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">11232.480000</td>
+</tr>
+<tr class="even">
+<td align="left">Triciclo</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+<td align="right">0.000000</td>
+</tr>
+</tbody>
+</table>
+<p>Con esta tabla podemos concluir que la mayoría de vehículos grandes
+(Camión, Furgón, Chasis-Cabina Grande) tienden a contaminar más que los
+pequeños ya que poseen valores mayores para el consumo de combustible y
+las emisiones. Esto confirma nuestros estudios previos relacionados con
+el área frontal y las emisiones máximas de los vehículos.</p>
+<p><strong>Transmisión vs Consumo y Emisiones</strong></p>
+<pre class="r"><code>tabla_comparativa1 &lt;- emisiones %&gt;%
+  group_by(transmission) %&gt;%
+  summarise(
+    Consumo_Medio = mean(consumption_max_l_100km, na.rm = TRUE),
+    Emisiones_Medias = mean(emissions_max_gCO2_km, na.rm = TRUE),
+    .groups = &#39;drop&#39;)
+
+kable(tabla_comparativa1, 
+      col.names = c(&quot;Transmisión&quot;, &quot;Consumo Medio (l/100km)&quot;, &quot;Emisiones Medias (g CO₂/km)&quot;),
+      caption = &quot;&quot;)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Transmisión</th>
+<th align="right">Consumo Medio (l/100km)</th>
+<th align="right">Emisiones Medias (g CO₂/km)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">0</td>
+<td align="right">6.800000</td>
+<td align="right">164.0000</td>
+</tr>
+<tr class="even">
+<td align="left">A</td>
+<td align="right">6.694687</td>
+<td align="right">156.8608</td>
+</tr>
+<tr class="odd">
+<td align="left">M</td>
+<td align="right">6.597852</td>
+<td align="right">161.3231</td>
+</tr>
+<tr class="even">
+<td align="left">SC</td>
+<td align="right">13.345714</td>
+<td align="right">142.0905</td>
+</tr>
+<tr class="odd">
+<td align="left">sc</td>
+<td align="right">NaN</td>
+<td align="right">NaN</td>
+</tr>
+</tbody>
+</table>
+<p>En esta tabla visualizamos fácilmente como los vehículos de
+transmisión semiautomática (SC) consumen la mayor cantidad de
+combustible de todas las categorías y sin embargo, son los que tienen
+transmisión automática (A) o manual (M) los que emiten más CO2. Esto
+sugiere que los coches más modernos como pueden ser los automáticos han
+conseguido un mejor ahorro del combustible pero no rebajar la cantidad
+de emisiones al medio; mientras que los semiautomáticos son menos
+sostenibles puesto que consumen grandes cantidades de combustible pese a
+emitir menos CO2.</p>
+<p><strong>Cilindrada vs Consumo y Emisiones</strong></p>
+<pre class="r"><code>tabla_comparativa2 &lt;- emisiones %&gt;%
+  mutate(Cilindrada_Intervalos = cut(engine_displacement_cm3, 
+                                     breaks = c(0, 1000, 2000, 3500, 6000, 8500, Inf),
+                                     labels = c(&quot;Hasta 1000 cm³&quot;, &quot;1000-2000 cm³&quot;, &quot;2000-3500 cm³&quot;, &quot;3500-6000 cm³&quot;, &quot;6000-8500 cm³&quot;, &quot;Más de 8500 cm³&quot;))) %&gt;%
+  group_by(Cilindrada_Intervalos) %&gt;%
+  summarise(
+    Consumo_Medio = mean(consumption_max_l_100km, na.rm = TRUE),
+    Emisiones_Medias = mean(emissions_max_gCO2_km, na.rm = TRUE),
+    .groups = &#39;drop&#39;)
+
+kable(tabla_comparativa2, 
+      col.names = c(&quot;Cilindrada del motor (Intervalos)&quot;, &quot;Consumo Medio (l/100km)&quot;, &quot;Emisiones Medias (g CO₂/km)&quot;),
+      caption = &quot;&quot;)</code></pre>
+<table>
+<colgroup>
+<col width="39%" />
+<col width="27%" />
+<col width="32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Cilindrada del motor (Intervalos)</th>
+<th align="right">Consumo Medio (l/100km)</th>
+<th align="right">Emisiones Medias (g CO₂/km)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Hasta 1000 cm³</td>
+<td align="right">5.824808</td>
+<td align="right">132.7092</td>
+</tr>
+<tr class="even">
+<td align="left">1000-2000 cm³</td>
+<td align="right">6.348621</td>
+<td align="right">153.6905</td>
+</tr>
+<tr class="odd">
+<td align="left">2000-3500 cm³</td>
+<td align="right">9.028264</td>
+<td align="right">219.3134</td>
+</tr>
+<tr class="even">
+<td align="left">3500-6000 cm³</td>
+<td align="right">12.164894</td>
+<td align="right">278.0250</td>
+</tr>
+<tr class="odd">
+<td align="left">6000-8500 cm³</td>
+<td align="right">13.000000</td>
+<td align="right">316.0000</td>
+</tr>
+<tr class="even">
+<td align="left">Más de 8500 cm³</td>
+<td align="right">1.800000</td>
+<td align="right">42.0000</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="right">19.543750</td>
+<td align="right">187.8571</td>
+</tr>
+</tbody>
+</table>
+<p>Con la tabla se nos confirma que existe una relación directamente
+proporcional entre el tamaño de la cilindrada y el consumo y emisiones
+del vehículo, de forma que a mayor cilindrada, mayores son los otros dos
+valores.<br />
+Atendiendo a los valores, los rangos de emisiones y consumo más altos se
+encuentran entre los 3000 y 8500</p>
 </div>
 <div id="conclusiones" class="section level1">
 <h1><strong>5. Conclusiones</strong></h1>
