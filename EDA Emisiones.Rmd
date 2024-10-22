@@ -22,7 +22,7 @@ COLOR_PowerIce = "red"
 COLOR_Weigth = "purple"
 ```
 
-# **1. Introducción y definición de objetos**
+# 1. Introducción y definición de objetos
 
 ## 1.1 Objetivo de la investigación
 
@@ -43,7 +43,7 @@ Antes de comenzar el análisis, se han descartado 8 de las 26 variables que ofre
 Una variable nueva, "Área frontal", ha sido creada a partir de las dimensiones del ancho y la altura del vehículo. Esta variable tiene como propósito analizar cómo el tamaño del vehículo influye en su resistencia aerodinámica y, por ende, en el consumo de combustible y las emisiones de CO2. Cuanto mayor sea el área frontal de un vehículo, mayor será la resistencia al viento que experimenta, lo que, a su vez, eleva el consumo de energía y las emisiones de CO2. Esta variable será clave para estudiar la relación entre las dimensiones del vehículo y sus emisiones./
 Se inicializará al comenzar el ánalisis univariante.
 
-# **2. Diccionario de los datos**
+# 2. Importación de datos y carga de paquetes
 ```{r}
 library(tidyverse)
 library(summarytools)
