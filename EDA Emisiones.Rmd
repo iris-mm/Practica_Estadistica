@@ -166,7 +166,7 @@ Se analiza la frecuencia de los distintos tipos de motores presentes en el datas
 
 ```{r}
 ggplot(emisiones, aes(x = `engine_type`)) +
-  geom_bar(fill = COLOR_EngineType) +
+  geom_bar(fill = COLOR_EngineType, color = COLOR_EngineType, alpha = 0.7) +
   labs(title = "Frecuencia de tipos de motor", x = "Tipo de motor", y = "Frecuencia") +
   theme_minimal() +
 theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Ajuste de la inclinación
@@ -180,7 +180,7 @@ Se evalúa la distribución de los vehículos según su categoría (como sedanes
 
 ```{r}
 ggplot(emisiones, aes(x = `market_segment`)) +
-  geom_bar(fill = "blue", alpha = 0.6) +
+  geom_bar(fill = "blue", color = "blue", alpha = 0.6) +
   labs(title = "Frecuencia de segmentos de mercado", x = "Segmento de mercado", y = "Frecuencia") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 55, hjust = 1)) # Ajuste de la inclinación
@@ -194,7 +194,7 @@ Se examina la distribución de los vehículos según su sistema de transmisión 
 
 ```{r}
 ggplot(emisiones, aes(x = `transmission`)) +
-  geom_bar(fill = "lightcoral") +
+  geom_bar(fill = "lightcoral", color = "lightcoral", alpha = 0.7) +
   labs(title = "Frecuencia de tipos de transmisión", x = "Transmisión", y = "Frecuencia") +
   theme_minimal()
 ```
@@ -242,11 +242,11 @@ ggplot(emisiones, aes(x = `gross_vehicle_weight_rating_kg`)) +
 
 La concentración de la mayoría de los vehículos en el lado izquierdo del histograma indica que el dataset está compuesto en gran parte por vehículos más ligeros. Esto sugiere una tendencia hacia modelos más eficientes en consumo de combustible y menores emisiones de CO2, lo cual es favorable desde una perspectiva ambiental. Además, implica que hay menos vehículos pesados, como SUVs o camiones, lo que contribuye positivamente a la sostenibilidad.
 
-**Histograma: Peso bruto del vehículo (kg)**
+**Histograma: Índice de eficacia del motor**
 
 ```{r}
 ggplot(emisiones, aes(x = `fuel_economy_index`)) +
-  geom_bar(fill = COLOR_EconomyIndex) +
+  geom_bar(fill = COLOR_EconomyIndex, color = COLOR_EconomyIndex, alpha = 0.7) +
   labs(title = "Distribución del Índice de Eficiencia del Combustible",
        x = "Índice de Eficiencia",
        y = "Frecuencia") +
