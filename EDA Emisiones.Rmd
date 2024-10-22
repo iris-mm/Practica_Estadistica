@@ -257,38 +257,44 @@ Vamos a proceder a calcular valores de diferentes parámetros de las siguientes 
 Teniendo en cuenta esto, estos son los valores calculados:
 
 *Resumen datos de consumición mínima de litros por 100km*
-{r}
+```{r}
 summary(emisiones$`consumption_max_l_100km`)
+```
 
 La mayor parte de los vehículos consumen entre 5.6 y 7.6 litros por cada 100 km, lo cual está es un consumo bastante eficiente, pero hay vehículos pueden consumir hasta 26.4 l/100 km, lo que representa valores muy altos y de eguro pertenecen a coches muy grandes y/o potentes. El consumo mínimo de 0.4 l/100 km podría verse como una anomalía o referirse a vehículos híbridos o eléctricos.
 
 *Resumen datos de emisión máxima de CO2 por kilómetro*
-{r}
+```{r}
 summary(emisiones$`emissions_max_gCO2_km`)
+```
 
 El rango de emisiones es realmente amplio, con la mayoría de los vehículos encontrandose con una consumición de entre 133 y 183 g/km de CO2. La media y la mediana estan muy cerca la una de la otyra, por lo que podemos ver que la mayoría emiten CO2 de una forma moderada. Los valores máximos de hasta 394 g/km podrían deberse a la antiguedad del modelo o a uvehiculos poco eficientes. Por otro lado, el valor mínimo de 5.6 g/km es probablemente un vehículo eléctrico o híbrido con emisiones muy bajas.
 
 *Resumen datos de sonsumición mínima de litros por 100km*
-{r}
+```{r}
 summary(emisiones$`consumption_min_l_100km`)
+```
 
 Los valores de consumo se ven moderados, con la mayoría de los vehículos en un valor entre 5.2 y 6.9 l/100 km. La media es de 6.129 l/100 km, lo que sugiere que los vehículos tienden a ser algo eficientes si tienen un bajo consumo. Sin embargo, el valor máximo de 60 l/100 km parece deberse a una anomalía, lo que indica que hay un vehículo que, en ciertas condiciones, tiene un consumo extremadamente alto.
 
 *Resumen datos de emisión mínima de CO2 por kilómetro*
-{r}
+```{r}
 summary(emisiones$`emissions_min_gCO2_km`)
+```
 
 A través de laa mediana y los cuartiles vemos que la mayoría de los vehículos emiten entre 124 y 170 g/km de CO2 en condiciones mínimas, lo cual es un comportamiento normal. La media de 146.3 g/km quiere decir que las emisiones son normalmente moderadas. Nuevamente, valores como 3.0 g/km se refieren a vehículos más limpios, mientras que los 374 g/km pertenecen a vehículos muy contaminantes.
 
 *Resumen datos de peso de los vehículos en kilogramos*
-{r}
+```{r}
 summary(emisiones$`gross_vehicle_weight_rating_kg`)
+```
 
 La mayoría de los vehículos tienen un peso entre 1,860 y 2,800 kg, con una media de 3,642 kg. Los valores máximos de hasta 70,000 kg sugieren que el conjunto de datos incluye vehículos extremadamente pesados. El valor mínimo de 0 kg probablemente se deba a una falta de información en los datos (Es decir, una parte en la que no se encuentren datos otorgados).
 
 *Resumen datos de potencia de los vehículos*
-{r}
+```{r}
 summary(emisiones$`power_cv`)
+```
 
 La potencia de los vehículos está concentrada en un rango deducible y razonable, con la mayoría de los vehículos encontrandose entre 107.3 y 176.6 CV, y una media de 150.4 CV. Esto indica que la mayoría de los vehículos tienen una potencia suficiente para el uso diario de una persona promedio, lo cual es lógico dado a que gran parte de la población tiene un vehículo. El valor máximo de 729.6 CV sugiere la presencia de vehículos concretos de alta potencia o de alto rendimiento. El valor mínimo de 0 CV, al igual que con la variable anterioir, podría deberse a una falta de información en la base de datos.
 
@@ -310,13 +316,13 @@ realizaremos gráficos de cajas para los siguientes datos:
 *Boxplot para las emisiones máximas de CO2*
 
 Este grafíco representara una representación de la mediana, rango entre cuartiles y valores atípicos de los datos de emisión.
-{r}
+```{r}
 ggplot(emisiones, aes(x = "", y = `emissions_max_gCO2_km`)) +
   geom_boxplot(fill = COLOR_MaxEmissions, outlier.colour = "black") +
   labs(title = "Boxplot de Emisiones Máximas de CO2", y = "Emisiones (gCO2/km)") +
   theme_minimal() +
   coord_flip()
-
+```
 - Rango Entre cuartiles (IQR): A través del rango entre el primer cuartil (Q1 ≈ 133 gCO2/km) y el tercer cuartil (Q3 ≈ 183 gCO2/km) podemos ver que la mayoría de los vehículos emiten entre 133 y 183 gramos de CO2 por kilómetro, lo que indica un nivel normal de emisiones.
 
 - Mediana: La mediana se sitúa aproximadamente a 151 gCO2/km, lo que significa que la mitad de los vehículos emiten menos de este valor y la otra mitad emiten más.
@@ -328,12 +334,13 @@ La mayoría de los vehículos tienen emisiones moderadas, pero existen algunos v
 *Boxplot para el consumo máximo de combustible*
 
 Este grafíco representara una representación de la mediana, rango entre cuartiles y valores atípicos de los datos de consumo.
-{r}
+```{r}
 ggplot(emisiones, aes(x = "", y = `consumption_max_l_100km`)) +
   geom_boxplot(fill = COLOR_Consumption, outlier.colour = "black") +
   labs(title = "Boxplot de Consumo Máximo de Combustible", y = "Consumo (l/100km)") +
   theme_minimal() +
   coord_flip()
+```
 
 - Rango entre cuartiles (IQR): La mayor parte de los vehículos consumen entre 5.6 l/100 km (Q1) y 7.6 l/100 km (Q3), lo que indica una eficiencia moderada en el consumo de combustible.
 
@@ -346,12 +353,13 @@ ggplot(emisiones, aes(x = "", y = `consumption_max_l_100km`)) +
 *Boxplot para el peso bruto del vehículo*
 
 Este gráfico representara una representación de la mediana, rango entre cuartiles y valores atípicos del peso del vehículo.
-{r}
+```{r}
 ggplot(emisiones, aes(x = "", y = `gross_vehicle_weight_rating_kg`)) +
   geom_boxplot(fill = COLOR_Weigth, outlier.colour = "black") +
   labs(title = "Boxplot de Peso Bruto del Vehículo", y = "Peso Bruto (kg)") +
   theme_minimal() +
   coord_flip()
+```
 
 - Rango entre cuartiles (IQR): La mayoría de los vehículos tienen un peso bruto entre 1,860 kg (Q1) y 2,800 kg (Q3), lo que corresponde a vehículos ligeros y medianos.
 
