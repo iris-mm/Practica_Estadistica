@@ -1484,7 +1484,7 @@ border-radius: 0px;
 
 
 <div id="introducción-y-definición-de-objetos" class="section level1">
-<h1><strong>1. Introducción y definición de objetos</strong></h1>
+<h1><strong>1. Introducción y definición de objetos </strong></h1>
 <div id="objetivo-de-la-investigación" class="section level2">
 <h2>1.1 Objetivo de la investigación</h2>
 <p>El objetivo de esta investigación es determinar la forma en que
@@ -1526,11 +1526,11 @@ de CO2. Cuanto mayor sea el área frontal de un vehículo, mayor será la
 resistencia al viento que experimenta, lo que, a su vez, eleva el
 consumo de energía y las emisiones de CO2. Esta variable será clave para
 estudiar la relación entre las dimensiones del vehículo y sus
-emisiones./ Se inicializará al comenzar el ánalisis univariante.</p>
+emisiones./ Se calculará al comenzar el ánalisis univariante.</p>
 </div>
 </div>
-<div id="diccionario-de-los-datos" class="section level1">
-<h1><strong>2. Diccionario de los datos</strong></h1>
+<div id="carga-de-paquetes-e-importación-de-datos" class="section level1">
+<h1><strong>2. Carga de paquetes e Importación de datos </strong></h1>
 <pre class="r"><code>library(tidyverse)
 library(summarytools)
 library(ggplot2)
@@ -1540,106 +1540,50 @@ library(knitr)
 library(reshape2)
 library(corrplot)
 emisiones &lt;- readxl::read_excel(&quot;idae_emissions.xlsx&quot;)</code></pre>
-<div id="clasificación-de-las-variables" class="section level2">
-<h2>2.1. Clasificación de las variables</h2>
-<p>En esta sección se describen y clasifican las variables disponibles
-en el dataset, diferenciando entre variables cuantitativas y
-cualitativas, y explicando cómo se usarán en el análisis.</p>
-<div id="variables-cuantitativas" class="section level3">
-<h3>2.1.1. Variables cuantitativas</h3>
-<p>Las <strong>variables cuantitativas</strong> son aquellas que
-expresan cantidades numéricas y se dividen en dos subcategorías:
-<strong>cuantitativas continuas</strong> y <strong>cuantitativas
-discretas</strong>. Estas variables serán fundamentales en el análisis
-descriptivo y bivariante, así como para los estudios de correlación,
-regresión y covarianza.</p>
-<ul>
-<li><p><strong>Variables cuantitativas continuas</strong>: Son aquellas
-que pueden tomar cualquier valor dentro de un rango continuo:</p>
-<ul>
-<li><code>Max Consumption l/100km</code>: Consumo máximo de combustible
-en litros por cada 100 km. Esta variable es clave para evaluar la
-eficiencia de combustible de los vehículos y su impacto en las
-emisiones.</li>
-<li><code>Max emissions gCO2/km</code>: Emisiones máximas de CO2 en
-gramos por kilómetro. Es una de las variables dependientes más
-importantes en el estudio.</li>
-<li><code>Min consumption l/100km</code>: Consumo mínimo de combustible,
-lo que permite ver la eficiencia mínima de un vehículo.</li>
-<li><code>Min emissions gCO2/km</code>: Emisiones mínimas de CO2.</li>
-<li><code>Width in mm</code>: Ancho del vehículo. Esta variable forma
-parte del cálculo del área frontal.</li>
-<li><code>Height in mm</code>: Altura del vehículo. Como el ancho, esta
-variable es fundamental para calcular la nueva variable de “área
-frontal”.</li>
-<li><code>Gross vehicle weight in kg</code>: Peso bruto del vehículo.
-Esto es importante para estudiar cómo el peso influye en el consumo y
-las emisiones.</li>
-<li><code>Electric consumption kwh/100km</code>: Consumo de energía
-eléctrica por cada 100 km, relevante para analizar la eficiencia
-energética en los vehículos eléctricos.</li>
-<li><code>Power CV</code>: Potencia del vehículo medida en caballos de
-fuerza, que nos ayuda a entender la relación entre la potencia y las
-emisiones.</li>
-<li><code>Power electric kw</code>: Potencia del motor eléctrico en
-kilovatios, para vehículos eléctricos o híbridos.</li>
-<li><code>Battery capacity kwh</code>: Capacidad de la batería en
-kilovatios-hora.</li>
-<li><code>Area frontal (calculada)</code>: Producto del ancho y altura
-del vehículo, usada para explorar la influencia de las dimensiones en la
-resistencia aerodinámica y las emisiones.</li>
-</ul></li>
-<li><p><strong>Variables cuantitativas discretas</strong>: Estas son
-variables numéricas que toman un número finito de valores, normalmente
-enteros.</p>
-<ul>
-<li><code>Engine displacement cm3</code>: Cilindrada del motor en
-centímetros cúbicos. La cilindrada suele estar relacionada con la
-potencia del motor y, por ende, con las emisiones.</li>
-<li><code>Power ice kw</code>: Potencia del motor de combustión interna
-en kilovatios.</li>
-<li><code>Battery range km</code>: Autonomía de la batería en
-kilómetros. Importante para estudiar la eficiencia en vehículos
-eléctricos.</li>
-</ul></li>
-</ul>
 </div>
-<div id="variables-cualitativas" class="section level3">
-<h3>2.1.2. Variables cualitativas</h3>
-<p>Las <strong>variables cualitativas</strong> se refieren a categorías
-o clases y se dividen en <strong>categóricas nominales</strong> y
-<strong>categóricas ordinales</strong>. Estas se utilizarán
-principalmente en análisis univariantes (frecuencias, gráficos de
-barras) y bivariantes (tablas de contingencia, análisis
-comparativos).</p>
-<ul>
-<li><p><strong>Variables cualitativas nominales</strong>: Estas
-variables son categóricas pero no tienen un orden inherente entre sus
-categorías.</p>
-<ul>
-<li><code>Model</code>: Modelo del vehículo. Aunque categórica, es
-interesante evaluar si ciertos modelos están asociados con mayores o
-menores emisiones.</li>
-<li><code>Engine type</code>: Tipo de motor (eléctrico, híbrido, de
-combustión interna). Fundamental para hacer comparativas entre los
-diferentes tipos de motor y sus emisiones.</li>
-<li><code>Market segment</code>: Segmento de mercado al que pertenece el
-vehículo (urbano, compacto, SUV, etc.). Este tipo de información
-permitirá comparaciones entre diferentes tipos de vehículos.</li>
-<li><code>Fuel economy index</code>: Índice de eficiencia energética,
-que categoriza a los vehículos en diferentes niveles (A, B, C,
-etc.).</li>
-</ul></li>
-<li><p><strong>Variables cualitativas ordinales</strong>: Estas
-variables tienen un orden lógico entre sus categorías:</p>
-<ul>
-<li><code>Transmission</code>: Tipo de transmisión (Manual,
-Semiautomática, Automática). Aquí se podría analizar si la transmisión
-tiene un impacto en el consumo o las emisiones.</li>
-</ul></li>
-</ul>
-</div>
-</div>
+<div id="diccionario-de-datos" class="section level1">
+<h1><strong>3. Diccionario de datos</strong></h1>
+<p><strong>Variables cuantitativas continuas</strong><br />
+- <code>Max Consumption l/100km</code>: Consumo máximo de combustible en
+litros por cada 100 km.<br />
+- <code>Max emissions gCO2/km</code>: Emisiones máximas de CO2 en gramos
+por kilómetro.<br />
+- <code>Min consumption l/100km</code>: Consumo mínimo de combustible en
+litros por cada 100 km.<br />
+- <code>Min emissions gCO2/km</code>: Emisiones mínimas de CO2 en gramos
+por kilómetro.<br />
+- <code>Gross vehicle weight in kg</code>: Peso bruto del
+vehículo.<br />
+- <code>Power CV</code>: Potencia del vehículo medida en caballos de
+fuerza.<br />
+- <code>Width in mm</code>: Ancho del vehículo. Forma parte del cálculo
+del área frontal.<br />
+- <code>Height in mm</code>: Altura del vehículo. Forma parte del
+cálculo del área frontal.<br />
+- <code>Area frontal (calculada)</code>: Producto del ancho y altura del
+vehículo.<br />
+</p>
+<p><strong>Variables cuantitativas discretas</strong><br />
+- <code>Engine displacement cm3</code>: Cilindrada del motor en
+centímetros cúbicos.<br />
+- <code>Power ice kw</code>: Potencia del motor de combustión interna en
+kilovatios.<br />
+</p>
+<p><strong>Variables cualitativas multinivel</strong><br />
+- <code>Engine type</code>: Tipo de motor: gasolina, gasóleo, gas
+natural, híbridos de gasolina, híbridos enchufables, eléctricos
+puros.<br />
+- <code>Market segment</code>: Categoría en la que se clasifica el
+vehículo dentro del mercado, según su tamaño, uso o función (por
+ejemplo, bus, coche, SUV).<br />
+- <code>Fuel economy index</code>: Índice de eficiencia energética, que
+categoriza a los vehículos en diferentes niveles (A, B, C, D, E, F, G,
+N/A).<br />
+</p>
+<p><strong>Variables cualitativas ordinales</strong><br />
+- <code>Transmission</code>: Tipo de transmisión (Manual,
+Semiautomática, Automática).<br />
+</p>
 <div id="justificación-del-uso-de-las-variables-en-el-análisis" class="section level2">
 <h2>2.2. Justificación del uso de las variables en el análisis</h2>
 <p>Cada una de las variables cuantitativas y cualitativas se utilizará
