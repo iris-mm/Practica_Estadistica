@@ -454,41 +454,58 @@ ggplot(emisiones, aes(x = `area_frontal_m2`, y = `consumption_max_l_100km`)) +
 
 ### 3.2.3. Correlación y covarianza
 
-En esta parte se analizarán las relaciones entre pares de variables cuantitativas mediante el cálculo de coeficientes de correlación y covarianza. Estos indicadores permitirán entender la fuerza y dirección de la relación entre dos variables.
+En esta parte analizaremos las relaciones entre pares de variables cuantitativas utilizando el cálculo de coeficientes de correlación y covarianza. Estos indicadores nos permitirán entender la fuerza y dirección de la relación entre las dos variables.
 
  *Correlación de Pearson*
-La correlación de Pearson mide la intensidad y la dirección de una relación lineal entre dos variables cuantitativas. Los valores de la correlación oscilan entre -1 y 1, donde:
+ 
+La correlación de Pearson mide la intensidad y la dirección de una relación lineal entre dos variables cuantitativas. Los valores de la correlación oscilan entre -1 y 1, es decir:
 
 - +1 indica una relación lineal perfecta positiva (cuando una variable aumenta, la otra también lo hace).
 - 0 indica que no hay una relación lineal aparente.
 - -1 indica una relación lineal perfecta negativa (cuando una variable aumenta, la otra disminuye).
-En este estudio, se calculará la correlación de Pearson para estudiar las siguientes relaciones:
+
+En este estudio, calcularemos la correlación de Pearson para estudiar las siguientes relaciones:
 
 Max Consumption l/100km y Max emissions gCO2/km: Con el objetivo de ver si el aumento en el consumo máximo de combustible está asociado con un aumento en las emisiones máximas de CO2.
 
 Power CV y Max emissions gCO2/km: Para determinar si los vehículos con mayor potencia en caballos de fuerza emiten más CO2.
 
+- Correlación entre Max Consumption l/100km y Max emissions gCO2/km:
 ```{r}
 cor(emisiones$consumption_max_l_100km, emisiones$emissions_max_gCO2_km, method = "pearson", use = "complete.obs")
+```
+
+La correlación de Pearson calculada entre el consumo máximo de combustible y las emisiones máximas de CO2 da un valor de 0.8216394, lo que indica una relación lineal positiva fuerte entre estas dos variables.Esto significa que a medida que el consumo máximo de combustible de un vehículo aumenta, también lo hacen las emisiones máximas de CO2.
+
+- Correlación entre Power CV y Max emissions gCO2/km:
+```{r}
 cor(emisiones$power_cv, emisiones$emissions_max_gCO2_km, method = "pearson", use = "complete.obs")
 ```
 
-- La correlación de Pearson calculada entre el consumo máximo de combustible y las emisiones máximas de CO2 ha dado un valor de 0.8216394, lo que indica una relación lineal positiva fuerte entre estas dos variables.Esto implica que a medida que el consumo máximo de combustible de un vehículo aumenta, también lo hacen las emisiones máximas de CO2.Este resultado es coherente con lo que cabría esperar en un estudio de emisiones de CO2 de vehículos, ya que los automóviles que tienen un mayor consumo de combustible tienden a ser menos eficientes energéticamente y, por tanto, emiten más gases contaminantes como el CO2.
-- La correlación de Pearson calculada entre la potencia en CV y las emisiones máximas de CO2 ha dado un valor de 0.3801142, lo que indica una relación lineal positiva moderada entre estas dos variables.Esto significa que, aunque existe una tendencia a que los vehículos con mayor potencia en cv tienden a emitir más CO2, la relación no es muy fuerte, y hay otros factores que también influyen significativamente en las emisiones de CO2, además de la potencia del vehículo. Aunque hay una correlación positiva entre la potencia del motor en CV y las emisiones de CO2 esta relación es más débil en comparación con la relación entre consumo de combustible y emisiones. Esto sugiere que, aunque la potencia es un factor a tener en cuenta, no es el principal determinante de las emisiones de CO2.
+La correlación de Pearson calculada entre la potencia en CV y las emisiones máximas de CO2 da un valor de 0.3801142, lo que indica una relación lineal positiva no muy fuerte entre estas dos variables.Esto significa que aunque existe una tendencia en los vehículos con mayor potencia en cv a emitir más CO2, la relación no es muy fuerte, ya que hay otros factores que también influyen más significativamente en las emisiones de CO2, además de la potencia del vehículo. 
 
 *Covarianza*
-La covarianza indica cómo varían juntas dos variables. A diferencia de la correlación, la covarianza no está acotada entre -1 y 1, lo que significa que su valor depende de las unidades de las variables.
+
+La covarianza indica cómo varían juntas dos variables. A diferencia de la correlación, la covarianza no está acotada entre -1 y 1, lo que significa que su valor depende de las unidades de las variables. Debemos tener en cuenta también que la covarianza no proporciona información sobre la fuerza o la naturaleza exacta de esta relación a diferencia de la correlación.
 
 - Una covarianza positiva indica que cuando una variable aumenta, la otra también tiende a aumentar.
 - Una covarianza negativa indica que cuando una variable aumenta, la otra tiende a disminuir.
-En el caso de las variables del estudio:
 
-Se calculará la covarianza entre Max Consumption l/100km y Max emissions gCO2/km para ver cómo varían juntas estas dos variables y si un mayor consumo implica una mayor emisión de CO2.
+En el caso de las variables del estudio vamos a calcular la covarianza para los mismos pares de variables para comprobar los resultados, es decir, entre Max Consumption l/100km y Max emissions gCO2/km para ver si un mayor consumo implica una mayor emisión de CO2 y también calcularemos la covarianza entre Power CV y Max emissions gCO2/km para ver si los vehículos con mayor potencia en caballos de fuerza emiten más CO2.
 
+- Covarianza entre Max Consumption l/100km y Max emissions gCO2/km:
 ```{r}
 cov(emisiones$emissions_max_gCO2_km, emisiones$consumption_max_l_100km, use = "complete.obs")
+```
+
+Como este resultado es positivo, entonces existe una relación directa entre estas dos variables, lo que significa que a medida que el consumo de combustible aumenta, también tienden a aumentar las emisiones de CO2.
+
+- Covarianza entre Power CV y Max emissions gCO2/km:
+```{r}
 cov(emisiones$power_cv, emisiones$emissions_max_gCO2_km, use = "complete.obs")
 ```
+
+Como este resultado es positivo, entonces existe una relación directa entre estas dos variables, indicando que a medida que aumenta la potencia del motor, también tienden a aumentar las emisiones de CO2.
 
 ### 3.2.4. Gráfica de dispersión y regresión lineal
 -------Gráficos de dispersión-------
